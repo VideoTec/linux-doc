@@ -1,0 +1,81 @@
+函数的调用语法
+函数调用，很像变量的使用，也是以“$”来标识的，其语法为：$( )或${ }。
+参数间以逗号分隔，函数名和参数间以空格分隔。函数调用以“$”开头，以圆括号或花括号把函数名和参数括起
+
+http://www.yayu.org/book/gnu_make/make-08.html 内嵌函数列表
+http://www.jfranken.de/homepages/johannes/vortraege/make_inhalt.en.html Built-in functions
+
+函数“wildcard”
+通配符会被自动展开。但在变量的定义和函数引用时，通配符将失效
+$(wildcard *.c) 来获取工作目录下的所有的.c文件列表
+$(wildcard *.c ./sub/*.c) 子目录下sub的所有源文件
+
+“$(patsubst %.c,%.o,$(wildcard *.c))”
+首先使用“wildcard”函数获取工作目录下的.c文件列表；之后将列表中所有文件名的后缀.c替换为.o
+
+eval 函数是具备一定的运行时刻改变makefile 能力
+函数“eval”对它的参数进行展开，
+展开的结果作为Makefile的一部分，make可以对展开内容进行语法解析。
+展开的结果可以包含一个新变量、目标、隐含规则或者是明确规则等。
+也就是说此函数的功能主要是：根据其参数的关系、结构，对它们进行替换展开
+
+“eval”函数执行时会对它的参数进行两次展开。evaluate [美][ɪˈvæljuˌet] 求值
+第一次展开过程发是由函数本身完成的，
+第二次是函数展开后的结果被作为Makefile内容时由make解析时展开的。
+明确这一点对于使用“eval”函数非常重要
+eval： 动态添加makefile脚本，类似js中的eval
+The eval function is very special: it allows you to define new makefile constructs that are not constant; which are the result of evaluating other variables and functions. The argument to the eval function is expanded, then the results of that expansion are parsed as makefile syntax. The expanded results can define new make variables, targets, implicit or explicit rules, etc.
+在理解了函数“eval”二次展开的过程后。
+实际使用时，当函数的展开结果中存在引用（格式为：$(x)）时，那么在函数的参数中应该使用“$$”来代替“$”。
+因为这一点，所以通常它的参数中会使用函数“value”来取一个变量的文本值
+
+$(eval $(TEST)) $(eval $(call TEST)) 没有区别？
+
+$(subst FROM, TO, TEXT)，即将字符串TEXT中的子串FROM变为TO
+
+foreach 函数
+$(foreach   <var>,<list>,<text>)
+把参数<list>中的单词逐一取出放到参数<var>所指定的变量中，然后再执行< text>所包含的表达式
+“LIST”中使用空格分割的单词依次取出赋值给变量“VAR”
+返回值：空格分割的多次表达式“TEXT”的计算的结果
+
+if 函数
+$(if <condition>,<then-part>,<else-part>)
+
+call函数
+$(call <expression>;,<parm1>;,<parm2>;,<parm3>;...)
+
+reverse =  $(1) $(2)
+foo = $(call reverse,a,b)
+
+reverse =  $(2) $(1)
+foo = $(call reverse,a,b)
+
+-----------------------------------------------------
+http://www.jfranken.de/homepages/johannes/vortraege/make_inhalt.en.html Built-in functions
+-----------------------------------------------------
+$(subst from,to,text)	Replace from with to in text.
+$(patsubst pattern,replacement,text)	Replace words matching pattern with replacement in text.
+$(strip string)	Remove excess whitespace characters from string.
+$(findstring find,text)	Locate find in text.
+$(filter pattern...,text)	Select words in text that match one of the pattern words.
+$(filter-out pattern...,text)	Select words in text that do not match any of the pattern words.
+$(sort list)	Sort the words in list lexicographically, removing duplicates.
+$(dir names...)	Extract the directory part of each file name.
+$(notdir names...)	Extract the non-directory part of each file name.
+$(suffix names...)	Extract the suffix (the last dot and following characters) of each file name.
+$(basename names...)	Extract the base name (name without suffix) of each file name.
+$(addsuffix suffix,names...)	Append suffix to each word in names.
+$(addprefix prefix,names...)	Prepend prefix to each word in names.
+$(join list1,list2)	Join two parallel lists of words.
+$(word n,text)	Extract the nth word (one-origin) of text.
+$(words text)	Count the number of words in text.
+$(wordlist s,e,text)	Returns the list of words in text from s to e.
+$(firstword names...)	Extract the first word of names.
+$(wildcard pattern...)	Find file names matching a shell file name pattern (not a `%' pattern).
+$(error text...)	When this function is evaluated, make generates a fatal error with the message text.
+$(warning text...)	When this function is evaluated, make generates a warning with the message text.
+$(shell command)	Execute a shell command and return its output.
+$(origin variable)	Return a string describing how the make variable variable was defined.
+$(foreach var,words,text)	Evaluate text with var bound to each word in words, and concatenate the results.
+$(call var,param,...)	Evaluate the variable var replacing any references to $(1),$(2) with the first, second, etc. param values.

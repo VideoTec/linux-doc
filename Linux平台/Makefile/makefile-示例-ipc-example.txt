@@ -1,0 +1,137 @@
+G:\rhel-share\Hi3518_SDK_V1.0.4.0\package\mpp\sample\Makefile
+G:\rhel-share\Hi3518_SDK_V1.0.4.0\package\mpp\sample\Makefile.param
+G:\rhel-share\Hi3518_SDK_V1.0.4.0\package\mpp\sample\vio\Makefile
+
+----------------------------------------------------------------------
+G:\rhel-share\Hi3518_SDK_V1.0.4.0\package\mpp\sample\Makefile
+----------------------------------------------------------------------
+rel:
+	@cd hifb;   make
+	@cd vio;    make
+	@cd venc;   make
+	@cd region; make
+	@cd vda;    make
+	@cd audio;  make
+	@cd tde;    make
+
+clean:
+	@cd hifb;   make clean
+	@cd vio;    make clean
+	@cd venc;   make clean
+	@cd region; make clean
+	@cd vda;    make clean
+	@cd audio;  make clean
+	@cd tde;    make clean
+
+cleanall:
+	@cd hifb;   make clean;   make cleanstream
+	@cd vio;    make clean;   make cleanstream
+	@cd venc;   make clean;   make cleanstream
+	@cd region; make clean;   make cleanstream
+	@cd vda;    make clean;   make cleanstream
+	@cd audio;  make clean;   make cleanstream
+	@cd tde;    make clean
+
+----------------------------------------------------------------------
+G:\rhel-share\Hi3518_SDK_V1.0.4.0\package\mpp\sample\Makefile.param
+----------------------------------------------------------------------
+# Hisilicon Hi3518 sample Makefile.param
+
+ifeq ($(PARAM_FILE), )
+     PARAM_FILE:=../../../mpp/Makefile.param
+     include $(PARAM_FILE)
+endif
+
+################# select sensor type for your sample ####################
+SENSOR_TYPE ?= APTINA_AR0130_DC_720P_30FPS
+#SENSOR_TYPE ?= SONY_ICX692_DC_720P_30FPS
+#SENSOR_TYPE ?= SONY_IMX104_DC_720P_30FPS
+#SENSOR_TYPE ?= SONY_IMX122_DC_1080P_30FPS
+#SENSOR_TYPE ?= APTINA_9M034_DC_720P_30FPS
+#SENSOR_TYPE ?= OMNI_OV9712_DC_720P_30FPS
+
+SENSOR_LIBS := $(REL_LIB)/libisp.a
+
+ifeq ($(SENSOR_TYPE), APTINA_AR0130_DC_720P_30FPS)
+    SENSOR_LIBS += $(REL_LIB)/libsns_ar0130_720p.a
+endif
+
+ifeq ($(SENSOR_TYPE), PANASONIC_MN34031_DC_720P_30FPS)
+    SENSOR_LIBS += $(REL_LIB)/libsns_mn34031_720p.a
+endif
+
+ifeq ($(SENSOR_TYPE), SONY_ICX692_DC_720P_30FPS)
+    SENSOR_LIBS += $(REL_LIB)/libsns_icx692.a
+endif
+
+ifeq ($(SENSOR_TYPE), SONY_IMX104_DC_720P_30FPS)
+    SENSOR_LIBS += $(REL_LIB)/libsns_imx104.a
+endif
+
+ifeq ($(SENSOR_TYPE), APTINA_9M034_DC_720P_30FPS)
+    SENSOR_LIBS += $(REL_LIB)/libsns_9m034.a
+endif
+
+ifeq ($(SENSOR_TYPE), OMNI_OV9712_DC_720P_30FPS)
+    SENSOR_LIBS += $(REL_LIB)/libsns_ov9712.a
+endif
+
+ifeq ($(SENSOR_TYPE), SONY_IMX122_DC_1080P_30FPS)
+    SENSOR_LIBS += $(REL_LIB)/libsns_imx122.a
+endif
+
+#########################################################################
+
+COMMON_DIR:=$(PWD)/../common
+
+INC_FLAGS := -I$(COMMON_DIR)
+INC_FLAGS += -I$(REL_INC)
+INC_FLAGS += -I$(SDK_PATH)/mpp/component/acodec
+
+ifeq ($(MPP_BUILD), y)
+INC_FLAGS += -I$(SDK_PATH)/mpp/$(EXTDRV)/tw2865
+else
+	INC_FLAGS += -I$(SDK_PATH)/mpp/extdrv/tw2865
+endif
+
+CFLAGS := -Wall -g $(INC_FLAGS) -D$(HIARCH) -DHICHIP=$(HICHIP) -DSENSOR_TYPE=$(SENSOR_TYPE) -D$(HIDBG) -D$(HI_FPGA) -lpthread -lm
+
+COMM_SRC := $(wildcard $(COMMON_DIR)/*.c)
+COMM_OBJ := $(COMM_SRC:%.c=%.o)
+
+
+----------------------------------------------------------------------
+G:\rhel-share\Hi3518_SDK_V1.0.4.0\package\mpp\sample\vio\Makefile
+----------------------------------------------------------------------
+# Hisilicon Hi3516 sample Makefile
+
+include ../Makefile.param
+#ifeq ($(SAMPLE_PARAM_FILE), )
+#     SAMPLE_PARAM_FILE:=../Makefile.param
+#     include $(SAMPLE_PARAM_FILE)
+#endif
+
+# target source
+SRC  := $(wildcard *.c) 
+OBJ  := $(SRC:%.c=%.o)
+
+TARGET := $(OBJ:%.o=%)
+.PHONY : clean all
+
+all: $(TARGET)
+
+MPI_LIBS := $(REL_LIB)/libmpi.a
+
+$(TARGET):%:%.o $(COMM_OBJ)
+	$(CC) $(CFLAGS) -lpthread -lm -o $@ $^ $(MPI_LIBS) $(AUDIO_LIBA) $(SENSOR_LIBS)
+
+clean:
+	@rm -f $(TARGET)
+	@rm -f $(OBJ)
+	@rm -f $(COMM_OBJ)
+
+cleanstream:
+	@rm -f *.h264
+	@rm -f *.jpg
+	@rm -f *.mjp
+	@rm -f *.mp4

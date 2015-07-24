@@ -1,0 +1,29 @@
+pthread_attr_init()：
+初始化线程属性变量。
+运行后，pthread_attr_t结构所包含的内容是操作系统支持的线程的所有属性的默认值
+
+pthread_attr_destroy()：
+删除线程的属性，用无效值覆盖
+
+#include <pthread.h>
+
+int pthread_attr_destroy(pthread_attr_t *attr);
+int pthread_attr_init(pthread_attr_t *attr);
+
+The pthread_attr_destroy() function shall destroy a  thread  attributes
+object.  An implementation may cause pthread_attr_destroy() to set attr
+to an implementation-defined invalid value. A destroyed attr attributes
+object  can  be reinitialized using pthread_attr_init(); the results of
+otherwise referencing the object after it has been destroyed are  unde-
+fined.
+
+The  pthread_attr_init()  function shall initialize a thread attributes
+object attr with the default value for all of the individual attributes
+used by a given implementation.
+
+The  resulting attributes object (possibly modified by setting individ-
+ual  attribute  values)  when  used  by  pthread_create()  defines  the
+attributes  of  the  thread  created. A single attributes object can be
+used in multiple simultaneous calls to pthread_create().   Results  are
+undefined  if  pthread_attr_init() is called specifying an already ini-
+tialized attr attributes object.

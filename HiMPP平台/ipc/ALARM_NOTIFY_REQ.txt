@@ -1,0 +1,74 @@
+ALARM_NOTIFY_REQ
+
+7.5.34设备告警数据上报（IPC）
+
+--------------------
+告警请求数据
+--------------------
+
+当设备发生报警（60 秒内为相同报警，仅发送一次），平台支持短信告警通知（携带图片 URL），同时设备自动抓拍图片上传到平台（利用平台提供 FTP 上传接口）。
+设备告警数据确认格式:
+
+<?xml version="1.0" encoding=" UTF-8" ?>
+<ALARM_NOTIFY_REQ>
+<DevID>设备编码</ DevID>
+<ChannelNo>视频通道编号</ChannelNo>
+<AlarmType>报警类型，1—移动侦测，2—人体红外，3—手动报警，4—开关量报警（外接 DIDO 设备）</AlarmType>
+<AlarmDesc>设备告警描述信息</AlarmDesc>
+<DIDONo>DIDO 告警编号(只有告警类型为 4 的情况下使用)</DIDONo>
+<FileName>告警抓拍图片文件名</FileName>  文件名，图片命名格式为：DevID_ChannelNo_YYYYMMDDHHMMSS.JPG
+</ALARM_NOTIFY_REQ>
+
+--------------------
+告警返回数据
+--------------------
+
+设备告警数据确认格式:
+<?xml version="1.0" encoding=" UTF-8" ?>
+<ALARM_NOTIFY_RES>
+<Result>结果</Result>              0 表示成功，其它表示错误
+<DevID>设备编码</ DevID>           设备唯一识别码
+</ALARM_NOTIFY_RES>
+
+
+--------------------
+G:\ipc-code\libProtocol\src\IPCXmlProto.c
+G:\ipc-code\inc\IPCXmlProto.h
+--------------------
+char* XmlProtoEncodeAlarmNotify( XML_REQ_ALARM_NOTIFY* alarmNotify ) 
+XML_RES_ALARM_NOTIFY* XmlProtoDecodeAlarmNotify( char* stream )
+
+typedef struct XML_REQ_ALARM_NOTIFY
+{
+			char			szDevID[256];
+			int			ChannelNO;
+			int			AlarmType;
+			char			AlarmDesc[256];
+			int			DIDONo;
+			char 		szFileName[256];
+}XML_REQ_ALARM_NOTIFY;
+
+typedef struct XML_RES_ALARM_NOTIFY
+{
+			int			Result;
+			char 		szDevID[256];
+}XML_RES_ALARM_NOTIFY;
+
+--------------------
+测试代码
+--------------------
+/*		//Test alarm notify
+		XML_REQ_ALARM_NOTIFY alarm_notify = {
+			"998",
+			1,
+			1,
+			"test alarm notify",
+			0,
+			"pic.jpg"
+		};
+		strcpy( alarm_notify.szDevID,	g_pRetDevInfo->szDevID );
+		XML_RES_ALARM_NOTIFY alarm_notify_res = { 0 };
+		pReqContent = XmlProtoEncodeAlarmNotify( &alarm_notify );
+		size = SyncdoPostHttp( NAV_PROVINCE_ADDR,NAV_PROVINCE_PARAM,pReqContent,&szRespContent,30,NAV_PROVINCE_PORT );
+		printf("alarm req:%s\nalarm resp:%s\n", pReqContent, szRespContent);
+*/

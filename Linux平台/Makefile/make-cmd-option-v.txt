@@ -1,0 +1,10 @@
+http://www.lenky.info/archives/2012/05/1688
+
+make V=1，这个选项能显示出编译过程中的详细信息，
+即是verbose编译模式，
+在之前的《显示make编译信息》文章里曾介绍过修改makefile来达到这个目的，
+但make V=1更简单方便，
+而make V=0或直接make（V=0是默认值）则是quiet编译模式，只会显示出简单的编译信息。
+
+1
+[root@localhost linux-2.6.30]# make V=1

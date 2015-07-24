@@ -1,0 +1,101 @@
+今天碰到一个问题:主线程pthread_create一个子线程A,子线程pthread_mutex_lock,然后调用其他的函数fun,最后从fun返回后再pthread_mutex_unlock.
+但是如果在fun中调用了pthread_exit异常退出,那么岂不是没释放锁就退出了,这肯定会引起死锁.
+
+解决办法一:
+在fun中调用pthread_exit之前都先调用pthread_mutex_lock释放锁,
+但是这就需要吧mutex作为参数传给fun,如果fun再调用了其他函数,就得一层一层的把mutex传下去,
+而且要找到fun及其调用的函数中的pthread_exit然后再修改是很麻烦的,如果fun是一个第三方程序,而且退出是调用了exit而不是pthread_exit,那就更麻烦了.
+
+解决办法二:
+POSIX线程API中提供了一个pthread_cleanup_push()/pthread_cleanup_pop()函数对用于自动释放资源.
+从pthread_cleanup_push()的调用点到pthread_cleanup_pop()之间的程序段中的终止动作（包括调用 pthread_exit()和取消点终止）都将执行pthread_cleanup_push()所指定的清理函数
+API定义如下:
+void pthread_cleanup_push(void (*routine) (void *), void *arg)
+void pthread_cleanup_pop(int execute)
+
+代码示例如下:
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+
+#define THREAD_NUMBER 2
+pthread_mutex_t mutex;
+
+void aa()
+{
+    pthread_exit(NULL);
+}
+
+void* hello1(void *arg)
+{ 
+    char *hello_str = (char *)arg;
+    int oldtype;
+
+    pthread_detach (pthread_self ()); 
+
+    pthread_cleanup_push(pthread_mutex_unlock, (void *) &mutex);
+    pthread_mutex_lock(&mutex);
+    sleep(2);
+    printf("%s\n", hello_str);
+    aa();
+    pthread_mutex_unlock(&mutex);
+    pthread_cleanup_pop(0);
+}
+
+void* hello2(void *arg)
+{
+    char *hello_str = (char *)arg;
+
+    pthread_detach (pthread_self ()); 
+    pthread_mutex_lock(&mutex);
+    sleep(1);
+    printf("%s\n", hello_str);
+    pthread_mutex_unlock(&mutex);
+}
+
+int main(int argc, char *argv[])
+{
+    int i;
+    int ret_val;
+
+    pthread_t pt[THREAD_NUMBER];
+    const char *arg[THREAD_NUMBER];
+    arg[0] = "hello world from thread1";
+    arg[1] = "hello world from thread2";
+
+    pthread_mutex_init(&mutex,NULL);
+    printf("Begin to create threads...\n");
+    ret_val = pthread_create(&pt[0], NULL, hello1, (void *)arg[0]);
+    if (ret_val != 0 ) {
+        printf("pthread_create error!\n");
+        exit(1);
+    }
+
+    ret_val = pthread_create(&pt[1], NULL, hello2, (void *)arg[1]);
+    if (ret_val != 0 ) {
+        printf("pthread_create error!\n");
+        exit(1);
+    }
+
+    sleep(5);
+    printf("Now, the main thread returns.\n");
+    return 0;
+}
+
+$ gcc -o a.out test.c -lpthread
+$ ./a.out 
+Begin to create threads...
+hello world from thread1
+hello world from thread2
+Now, the main thread returns.
+
+可以看出hello1()->aa()->pthread_exit(),当线程hello1退出后锁已经释放了
+其实不光是释放锁,还可以释放其他资源.
+
+当然上述pthread_cleanup_push()/pthread_cleanup_pop()是有缺陷的,
+比如线程处于PTHREAD_CANCEL_ASYNCHRONOUS状态，上述代码段就有可能出错，
+因为CANCEL事件有可能在 pthread_cleanup_push()和pthread_mutex_lock()之间发生，或者在 pthread_mutex_unlock()和pthread_cleanup_pop()之间发生，从而导致清理函数unlock一个并没有加锁的 mutex变量，造成错误。
+因此，在使用清理函数的时候，都应该暂时设置成PTHREAD_CANCEL_DEFERRED模式。为此，POSIX的 Linux实现中还提供了一对不保证可移植的 pthread_cleanup_push_defer_np()/pthread_cleanup_pop_defer_np()扩展函数
+
+具体可参考下面这篇文章

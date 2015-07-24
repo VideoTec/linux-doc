@@ -1,0 +1,6 @@
+修改MAC OS X物理地址
+ifconfig en0 lladdr a0:b1:c2:d3:e4:f5
+
+关闭，开启网卡
+ifconfig eth0 up
+ifconfig eth0 down

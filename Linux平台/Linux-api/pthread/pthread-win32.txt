@@ -1,0 +1,40 @@
+http://sourceforge.net/projects/pthreads4w/
+
+
+In general:
+	pthread[VG]{SE,CE,C}[c].dll
+	pthread[VG]{SE,CE,C}[c].lib
+
+where:
+	[VG] indicates the compiler
+	V	- MS VC, or
+	G	- GNU C
+
+	{SE,CE,C} indicates the exception handling scheme
+	SE	- Structured EH, or
+	CE	- C++ EH, or
+	C	- no exceptions - uses setjmp/longjmp
+
+	c	- DLL compatibility number indicating ABI and API
+		  compatibility with applications built against
+		  a snapshot with the same compatibility number.
+		  See 'Version numbering' below.
+
+The name may also be suffixed by a 'd' to indicate a debugging version
+of the library. E.g. pthreadVC2d.lib. Debugging versions contain
+additional information for debugging (symbols etc) and are often not
+optimised in any way (compiled with optimisation turned off).
+
+Examples:
+	pthreadVSE.dll	(MSVC/SEH)
+	pthreadGCE.dll	(GNUC/C++ EH)
+	pthreadGC.dll	(GNUC/not dependent on exceptions)
+	pthreadVC1.dll	(MSVC/not dependent on exceptions - not binary
+			compatible with pthreadVC.dll)
+	pthreadVC2.dll	(MSVC/not dependent on exceptions - not binary
+			compatible with pthreadVC1.dll or pthreadVC.dll)
+
+The GNU library archive file names have correspondingly changed to:
+
+	libpthreadGCEc.a
+	libpthreadGCc.a

@@ -1,0 +1,1 @@
+cp 620.txt /etc/hosts

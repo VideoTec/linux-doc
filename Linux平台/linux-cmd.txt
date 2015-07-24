@@ -1,0 +1,340 @@
+﻿1. 打开终端terminal（控制台）的命令
+   菜单：application -> accessories[英][ək'sesərɪz] -> terminal
+   自定义快捷键：菜单 system -> keyboard shortcuts -> open terminal 选中后，按住自定义的快捷键，就可以设置了。
+2. 上次命令
+
+3. su命令行，进入root，用户。
+
+4. sudo ./VBoxLinuxAdditions.run
+   sudo sh VBoxLunuxAdditions.run  这里sh的作用是？
+   sh或是执行脚本，或是切换到sh这个bash里，默认的shell是bash，你可以试试tcsh啊，csh啊，ksh，zsh什么的，
+   看看别的shell是什么样子的。
+   当然，linux中sh是链接到bash上的，所以sh与bash在功能上是没有区别的。
+   还有就是在执行脚本的时候是用sh + 脚本名的方式来执行，
+   其实，大部分的时候，简单脚本只要权限设置正确，可以直接执行，不需要sh命令的
+   
+5. 查看文件权限 ls-l
+   -r-xr-xr-x 1 wangxiang root  9942477 May 16 20:17 VBoxLinuxAdditions.run
+   一部分是第一列即为“d” ,表示文件类型（目录或文件夹），
+   另一部分是“rwxr-x---” 表示文件权限，权限有分为三段：
+   即为 “ rwx ”,“  r-x  ”和 “ ---  ”
+   分别表示 ，文件所有者的权限，文件所属组的权限 和其他用户对文件的权限
+   
+   r :含义为 “可读”，用数字 4 表示   
+  
+   w:含义为 “可写”用数字 2 表示  
+  
+   X（小X）：含义为“可执行”用数字 1 表示 
+   
+6. 挂载命令（virtual box 共享文件夹）
+mount [-t vfstype] [-o options] device dir
+-o options 主要用来描述设备或档案的挂接方式
+-t vfstype 指定文件系统的类型，通常不必指定
+
+   mount -t vboxsf share /mnt/share_windows
+   
+7. Linux文件的复制、删除和移动命令
+cp /home/wangxiang/jdk1.8.0_05/ /usr/java
+cp: omitting[oˈmɪt]（忽略） directory `/home/wangxiang/jdk1.8.0_05/'
+出现该警告的原因是因为foldera目录下还存在目录，所以不能直接拷贝
+解决办法：使用递归拷贝，在cp命令后面加上-r参数
+[root@localhost opt]# cp -r foldera folderc
+
+8. ls查看所有文件（包括隐藏文件）
+Bash Shell: Display All Hidden Dot Files In a Directory
+
+9。
+linux下的拷贝（cp）、删除（rm）、剪切（mv）命令
+rm [-dfirv][--help][--version][文件或目录...]
+
+10
+tar xzvf jdk-7u25-linux-x64.tar.gz -C /usr/java/
+tar xzvf this.tar.gz ./
+
+tar -xvf home_backup.tar home/test.c   指定解压出test.c这个文件。解压过程中会自动创建home这个子目录
+
+注意，解压到指定的目录：
+tar -zxvf /home/images.tar.gz -C /specific-dir
+
+tar -cvf home_backup.tar /home  将/home目录下的所有文件打包入home_backup.tar文件中
+
+tar 功能 选项 文件
+
+-x：解压  -c: 建立新的归档文件
+-z：有gzip属性的
+-v：显示所有过程
+-f，--file [主机名:]文件名 指定要处理的文件名
+
+Tar exit code
+       0      Successful termination.
+
+       1      Some files differ.  If tar was invoked with the
+              --compare (--diff, -d) command line option, this means
+              that some files in the archive differ from their disk
+              counterparts.  If tar was given one of the --create,
+              --append or --update options, this exit code means that
+              some files were changed while being archived and so the
+              resulting archive does not contain the exact copy of
+              the file set.
+
+       2      Fatal error.  This means that some fatal, unrecoverable
+              error occurred.
+
+11 给文件创建软链接
+ln [参数][源文件或目录][目标文件或目录]
+ln -s log2013.log link2013
+
+12 《磁盘的基本操作》为什么没有根目录挂载点呢？
+df
+Filesystem           1K-blocks      Used Available Use% Mounted on
+tmpfs                    47236         4     47232   0% /dev
+/dev/mtdblock2            5120      3640      1480  71% /home/evc/app
+/dev/mtdblock3            5120      3824      1296  75% /home/evc/web
+/dev/mtdblock4            1024       232       792  23% /home/evc/config
+/dev/mmcblk0p1         7557120     37952   7519168   1% /mnt/sd
+
+total 4
+drwxrwxr-x    2 1000     1000             0 Jul 22 15:50 bin
+drwxrwxrwt    5 root     root          3360 Jan  1  1970 dev
+drwxrwxrwx    5 1000     1000             0 Jul 22 15:50 etc
+drwxr-xr-x    3 1000     1000             0 Jul 22 15:50 home
+lrwxrwxrwx    1 1000     1000             9 Jul 22 15:50 init -> sbin/init
+drwxrwxrwx    2 1000     1000             0 Jul 22 15:50 lib
+lrwxrwxrwx    1 1000     1000            11 Jul 22 15:50 linuxrc -> bin/busybox
+-rwxr-xr-x    1 1000     1000           431 Apr 21  2011 mknod_console
+drwxr-xr-x    5 1000     1000             0 Jul 22 15:50 mnt
+drwxrwxrwx    2 1000     1000             0 Jul 22 15:50 nfsroot
+dr-xr-xr-x   54 root     root             0 Jan  1  1970 proc
+drwxr-xr-x    2 1000     1000             0 Jul 22 15:50 root
+drwxrwxr-x    2 1000     1000             0 Jul 22 15:50 sbin
+drwxr-xr-x   11 root     root             0 Jan  1  1970 sys
+drwxrwxr-x    3 1000     1000             0 Nov 12 21:59 tmp
+drwxrwxr-x    7 1000     1000             0 Jul 22 15:50 usr
+drwxrwxrwx    3 1000     1000             0 Jul 22 15:50 var
+
+
+14 ifconfig
+ifconfig -a
+eth0      Link encap:Ethernet  HWaddr 00:00:00:00:00:17
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:228 errors:0 dropped:81 overruns:0 frame:0
+          TX packets:174 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:28997 (28.3 KiB)  TX bytes:56028 (54.7 KiB)
+          Interrupt:12
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:109 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:109 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:9990 (9.7 KiB)  TX bytes:9990 (9.7 KiB)
+
+ra0       Link encap:Ethernet  HWaddr 7C:DD:90:3A:2E:C4
+          BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:1254 errors:0 dropped:452 overruns:0 frame:0
+          TX packets:168 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:196844 (192.2 KiB)  TX bytes:47600 (46.4 KiB)
+主要指标说明：
+eth0/lo：网络接口名
+Link encap：网络类型
+HWaddr：网卡物理地址
+Bcast：广播地址
+Mask：子网掩码
+inet addr：IPv4地址
+inet6 addr：IPv6地址
+UP：网络接口处于打开状态
+MTU：最大传输单元
+Metric：度量值
+RX packets/TX packets：接受/传输数据包统计
+RX bytes/TX bytes：接受/传输数据字节数统计
+
+网络设备名：eth0 lo ra0
+
+down 关闭指定的网络设备。
+up 启动指定的网络设备。
+
+netmask<子网掩码> 设置网络设备的子网掩码
+
+命令格式：
+ifconfig 【interface】 【options】address
+        主要参数：
+interface：网络接口名
+up：打开网络接口
+down：关闭网络接口
+broadcast：设置网络接口的广播地址
+netmask：设置网络接口的子网掩码
+address：设置网络接口的IPv4地址
+add：给指定网络接口配置IPv6地址
+del：删除指定网络接口的IPv6地址
+
+ifconfig eth0 192.168.120.204 配置eth0的ip 
+ifconfig eth0 192.168.120.204 netmask 255.255.255.0 配置eth0的ip，并加子网掩码
+ifconfig eth0 192.168.120.204 netmask 255.255.255.0 broadcast 192.168.120.255 配置eth0的ip，并加子网掩码和广播地址
+
+网关
+route add default gw 192.168.1.1
+
+udhcpc命令
+udhcpc就是终端设备作为DHCP客户端
+ps 输出
+  869     1 root     S     1344  1.4   0  0.0 udhcpc -q -ieth0
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+Sending discover...
+
+
+15 Linux查看CPU和内存使用情况
+top -u oracle
+运行 top 命令后，CPU 使用状态会以全屏的方式显示，并且会处在对话的模式 -- 用基于 top 的命令，可以控制显示方式等等。退出 top 的命令为 q （在 top 运行中敲 q 键一次
+  PID  PPID USER     STAT   VSZ %VSZ CPU %CPU COMMAND
+ 1263  1078 root     R     1344  1.4   0  0.4 top
+  832     1 root     S     3456  3.6   0  0.0 lighttpd -f /usr/local/lighttpd-1.
+  833   832 root     S     3284  3.4   0  0.0 {CGIInstance.fcg} /tmp/app/bin/cgi
+ 1078     1 root     S     1356  1.4   0  0.0 -sh
+  869     1 root     S     1344  1.4   0  0.0 udhcpc -q -ieth0
+    1     0 root     S     1340  1.4   0  0.0 init
+  502     1 root     S <    872  0.9   0  0.0 udevd --daemon
+    6     2 root     SW       0  0.0   0  0.0 [rcu_kthread]
+  159     2 root     SW       0  0.0   0  0.0 [kworker/0:1]
+  495     2 root     SWN      0  0.0   0  0.0 [jffs2_gcd_mtd3]
+  493     2 root     SWN      0  0.0   0  0.0 [jffs2_gcd_mtd2]
+    5     2 root     SW       0  0.0   0  0.0 [kworker/u:0]
+    4     2 root     SW       0  0.0   0  0.0 [kworker/0:0]
+  478     2 root     SW       0  0.0   0  0.0 [mmcqd/0]
+  128     2 root     SW       0  0.0   0  0.0 [sync_supers]
+  497     2 root     SWN      0  0.0   0  0.0 [jffs2_gcd_mtd4]
+  145     2 root     SW       0  0.0   0  0.0 [khubd]
+  241     2 root     SW<      0  0.0   0  0.0 [rpciod]
+  244     2 root     SW       0  0.0   0  0.0 [kswapd0]
+
+  free -m    linux查看内存的大小
+             total         used         free       shared      buffers
+Mem:            92           41           51            0            0
+-/+ buffers:                 40           52
+Swap:            0            0            0
+
+cat /proc/meminfo  查看内存信息
+MemTotal:          94476 kB
+MemFree:           52432 kB
+Buffers:             964 kB
+Cached:            26424 kB
+SwapCached:            0 kB
+Active:             9172 kB
+Inactive:          19148 kB
+Active(anon):       3008 kB
+Inactive(anon):     9184 kB
+Active(file):       6164 kB
+Inactive(file):     9964 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:                 0 kB
+Writeback:             0 kB
+AnonPages:           956 kB
+Mapped:             1500 kB
+Shmem:             11260 kB
+Slab:               7600 kB
+SReclaimable:       1272 kB
+SUnreclaim:         6328 kB
+KernelStack:         328 kB
+PageTables:          128 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:       47236 kB
+Committed_AS:      13308 kB
+VmallocTotal:     909312 kB
+VmallocUsed:        3544 kB
+VmallocChunk:     900744 kB
+关于/proc/meminfo中各行的含意, 在内核源代码的Documentation/filesystems/proc.txt
+
+系统的真实内存大小可以用dmesg 　grep [mM][eE][mM]看到
+Linux version 3.0.8 (foscam@ubuntu) (gcc version 4.4.1 (Hisilicon_v100(gcc4.4-290+uclibc_0.9.32.1+eabi+linuxpthread)) ) #3 Wed Jul 23 06:57:29 CST 2014
+CPU: ARM926EJ-S [41069265] revision 5 (ARMv5TEJ), cr=00053177
+CPU: VIVT data cache, VIVT instruction cache
+Machine: hi3518
+Memory policy: ECC disabled, Data cache writeback
+AXI bus clock 200000000.
+
+Memory: 98MB = 98MB total
+Memory: 92804k/92804k available, 7548k reserved, 0K highmem
+Virtual kernel memory layout:
+    vector  : 0xffff0000 - 0xffff1000   (   4 kB)
+    fixmap  : 0xfff00000 - 0xfffe0000   ( 896 kB)
+    DMA     : 0xffc00000 - 0xffe00000   (   2 MB)
+    vmalloc : 0xc6800000 - 0xfe000000   ( 888 MB)
+    lowmem  : 0xc0000000 - 0xc6200000   (  98 MB)
+    modules : 0xbf000000 - 0xc0000000   (  16 MB)
+      .init : 0xc0008000 - 0xc01aa000   (1672 kB)
+      .text : 0xc01aa000 - 0xc0643000   (4708 kB)
+      .data : 0xc0644000 - 0xc0661720   ( 118 kB)
+       .bss : 0xc0661744 - 0xc06745b0   (  76 kB)
+
+
+16 cat命令的用途是连接文件或标准输入并打印
+
+17 fdisk 磁盘分区命令：
+   fdisk -l 机器上所有硬盘的分区情况
+Device Boot      Start         End      Blocks   Id  System  
+/dev/hda1   *           1         765     6144831    7  HPFS/NTFS  
+/dev/hda2             766        2805    16386300    c  W95 FAT32 (LBA)  
+/dev/hda3            2806        7751    39728745    5  Extended  
+/dev/hda5            2806        3825     8193118+  83  Linux  
+/dev/hda6            3826        5100    10241406   83  Linux  
+/dev/hda7            5101        5198      787153+  82  Linux swap / Solaris  
+/dev/hda8            5199        6657    11719386   83  Linux  
+/dev/hda9            6658        7751     8787523+  83  Linux 
+Blocks的单位是byte ，
+我们可以换算成M，比如第一个分区/dev/hda1的大小如果换算成M，
+应该是6144831/1024=6000M，也就是6G左右
+System 表示的文件系统，比如/dev/hda1 是NTFS格式的；/dev/hda2 表示是fat32格式的文件系统
+
+在此例中，我们要特别注意的是/dev/hda3分区，这是扩展分区；他下面包含着逻辑分区，其实这个分区相当于一个容器；从属于她的有 hda5,hda6,hda7,hda8,hda9
+
+查看磁盘分区命令：
+pvdisplay  physical volume
+lvdisplay  logic volume
+vgdisplay  volume group
+
+LVM： 
+Logical Volume Manager逻辑卷管理，它是一种磁盘的管理方式，是Linux环境下对磁盘分区进行管理的一种机制，
+LVM是建立在硬盘和分区之上的一个逻辑层，来提高磁盘分区管理的灵活性。
+通过LVM系统管理员可以轻松管理磁盘分区。
+ 
+卷组volume group (VG)
+卷组是LVM中最高抽象层，是由一个或多个物理卷所组成的存储器池。
+ 
+物理卷physical volume (PV)
+典型的物理卷是硬盘分区，但也可以是整个硬盘或已创建的Software RAID 卷。
+ 
+逻辑卷logical volume (LV)
+逻辑卷相当于非LVM系统中的分区，它在卷组上建立，是一个标准的块设备，可以在其上建立文件系统。
+ 
+物理块physical extent (PE)
+物理卷按大小相等的“块”为单位存储，块的大小与卷组中逻辑卷块的大小相同。
+ 
+逻辑块logical extent (LE)
+逻辑卷按“块”为单位存储，在一卷组中的所有逻辑卷的块大小是相同的
+
+linux的touch命令不常用，一般在使用make的时候可能会用到，用来修改文件时间戳，或者新建一个不存在的文件

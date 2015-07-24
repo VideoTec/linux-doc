@@ -1,0 +1,9 @@
+http://pubs.opengroup.org/onlinepubs/7908799/xsh/pthread_cond_init.html
+
+In cases where default condition variable attributes are appropriate, 
+the macro PTHREAD_COND_INITIALIZER 
+can be used to initialise condition variables that are statically allocated. 
+
+The effect is equivalent to dynamic initialisation 
+by a call to pthread_cond_init() with parameter attr specified as NULL, 
+except that no error checks are performed.

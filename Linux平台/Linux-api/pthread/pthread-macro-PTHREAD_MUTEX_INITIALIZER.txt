@@ -1,0 +1,9 @@
+http://pubs.opengroup.org/onlinepubs/7908799/xsh/pthread_mutex_init.html
+
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+In cases where default mutex attributes are appropriate, 
+the macro PTHREAD_MUTEX_INITIALIZER can be used to initialise mutexes that are statically allocated. 
+The effect is equivalent to dynamic initialisation 
+by a call to pthread_mutex_init() with parameter attr specified as NULL, 
+except that no error checks are performed.

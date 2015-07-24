@@ -1,0 +1,28 @@
+pthread_create()：创建一个线程
+
+ #include <pthread.h>
+
+int pthread_create(
+pthread_t              *restrict thread,
+const pthread_attr_t   *restrict attr,            可以为空
+void                   *(*start_routine)(void*), 
+void                   *restrict arg);
+
+示例
+void *thr_fn(void *arg)
+{
+    printids("new thread: ");
+    return NULL;
+}
+
+int main(void)
+{
+    int err;
+    pthread_t ntid;
+    err = pthread_create(&ntid, NULL, thr_fn, NULL);
+    if (err != 0)
+        printf("can't create thread: %s\n", strerror(err));
+    printids("main thread:");
+    pthread_join(ntid,NULL);
+    return EXIT_SUCCESS;
+}

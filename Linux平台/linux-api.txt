@@ -1,0 +1,99 @@
+#includde <sys/reboot.h>
+/* Reboot or halt the system.  */
+extern int reboot (int __howto) __THROW;
+
+reboot(RB_AUTOBOOT);
+
+#include <usr/include/unistd.h>
+/* Make all changes done to all files actually appear on disk.  */
+extern void sync (void) __THROW;
+
+重启设备
+sync()
+reboot(RB_AUTOBOOT);
+
+#include <unistd.h>
+count = readlink( "/proc/self/exe", buf, MAXBUFSIZE );
+定义函数：int readlink(const char * path, char * buf, size_t bufsiz);
+
+函数说明：readlink()会将参数path 的符号连接内容存到参数buf 所指的内存空间, 
+返回的内容不是以NULL作字符串结尾, 但会将字符串的字符数返回. 
+若参数bufsiz 小于符号连接的内容长度, 过长的内容会被截断
+
+启动子进程
+system会阻塞进程
+int main()  
+{  
+    printf("Running ps with system\n");  
+    //ps进程结束后才返回，才能继续执行下面的代码  
+    system("ps au");// 1  
+    printf("ps Done\n");  
+    exit(0);  
+}  
+如果把注释1的语句改为：system("ps au &");则system函数立即返回
+如果无法启动shell来运行这个命令，system函数返回错误代码127；如果是其他错误，则返回-1。否则，system函数将返回该命令的退出码
+
+ftruncate
+头文件：#include <unistd.h>
+
+定义函数：int ftruncate(int fd, off_t length);
+
+函数说明：ftruncate()会将参数fd 指定的文件大小改为参数length 指定的大小。参数fd 为已打开的文件描述词，而且必须是以写入模式打开的文件。
+如果原来的文件大小比参数length 大，则超过的部分会被删去。
+
+返回值：执行成功则返回0, 失败返回-1, 错误原因存于errno.
+
+错误代码：
+1、EBADF 参数fd 文件描述词为无效的或该文件已关闭。
+2、EINVAL 参数fd 为一socket 并非文件, 或是该文件并非以写入模式打开。
+
+linux open 和 fopen 的区别？
+(fcntl(fd, F_SETLK, &fl));
+open 返回的整数：文件描述符
+fopen 返回的是指针：文件流指针
+int _fileno( FILE *stream );  从文件流指针获取文件描述符
+
+ #include <fcntl.h>
+        int open(const char *pathname, int oflag, ... );
+		
+		第三个参数（...）仅当创建新文件时才使用，用于指定文件的访问权限位（access permission bits）
+S_IRUSR
+ Permits the file's owner to read it.
+S_IWUSR
+ Permits the file's owner to write to it.
+S_IRGRP
+ Permits the file's group to read it.
+S_IWGRP
+ Permits the file's group to write to it.
+示例：#define LOCKMODE (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
+The "S" is for STAT, the "I" for INODE (a term not really used in POSIX itself outside Rationale), the "R" for READ and the "USR" for USER.
+ 
+		第二个参数oflag 用于指定文件的打开/创建模式，这个参数可由以下常量（定义于 fcntl.h）通过逻辑或构成。
+必选其一：
+O_RDONLY      只读模式
+O_WRONLY      只写模式
+O_RDWR        读写模式
+可选项：
+O_APPEND       每次写操作都写入文件的末尾
+O_CREAT        如果指定文件不存在，则创建这个文件
+O_EXCL         如果要创建的文件已存在，则返回 -1，并且修改 errno 的值
+O_TRUNC        如果文件存在，并且以只写/读写方式打开，则清空文件全部内容
+O_NOCTTY       如果路径名指向终端设备，不要把这个设备用作控制终端。
+O_NONBLOCK     如果路径名指向 FIFO/块文件/字符文件，则把文件的打开和后继 I/O设置为非阻塞模式（nonblocking mode）
+以下三个常量同样是选用的，它们用于同步输入输出
+O_DSYNC        等待物理 I/O 结束后再 write。在不影响读取新写入的数据的前提下，不等待文件属性更新。
+O_RSYNC        read 等待所有写入同一区域的写操作完成后再进行
+O_SYNC         等待物理 I/O 结束后再 write，包括更新文件属性的 I/O
+
+lockf fcntl flock区别
+In Linux, lockf() is just a wrapper around fcntl(),
+          flock() locks are separate (and will only work on local filesystems, not on e.g. NFS mounts). 
+
+fcntl() locks are the most reliable
+
+#include <unistd.h>
+int lockf(int fd, int cmd, off_t len);
+# define F_ULOCK 0 //解锁
+# define F_LOCK 1 //互斥锁定区域   会等待
+# define F_TLOCK 2 //测试互斥锁定区域  会返回错误
+# define F_TEST 3 //测试区域 如果该区域可访问，lockf()将返回 0，否则返回?1 errno 设置为[EACCES]

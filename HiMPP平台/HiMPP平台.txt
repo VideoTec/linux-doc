@@ -1,0 +1,131 @@
+VDA 图像侦测：1. 运动侦测 2. 遮罩侦测
+
+<mpp/hi_defines.h>
+/* For VDA */
+#define VDA_MAX_NODE_NUM        32
+#define VDA_MAX_INTERNAL        256
+#define VDA_CHN_NUM_MAX         32
+#define VDA_MAX_WIDTH           960
+#define VDA_MAX_HEIGHT          576
+
+<mpp/mpi_vda.h>
+创建VDA通道(vda channel) - 重点：VDA通道配置项
+HI_S32 HI_MPI_VDA_CreateChn(VDA_CHN VdaChn, const VDA_CHN_ATTR_S *pstAttr);
+HI_MPI_VDA_CreateChn(VdaChn, &stVdaChnAttr);      //Create the vda channel
+                                                  //HI_MPI_VDA_DestroyChn(VdaChn)
+
+绑定输入通道
+s32Ret = HI_MPI_SYS_Bind(&stSrcChn, &stDestChn);  //HI_MPI_SYS_UnBind(&stSrcChn, &stDestChn);
+                                                  //只允许接收者绑定源，数据源 自动向 接收者发送数据
+
+/* step 3: vda chn start recv picture */
+s32Ret = HI_MPI_VDA_StartRecvPic(VdaChn);         //HI_MPI_VDA_StopRecvPic(VdaChn);
+
+重点：检测通道 <-> 设备文件句柄，利用select检测是否有变化
+VdaFd = HI_MPI_VDA_GetFd(VdaChn); //获取视频侦测分析通道对应的设备文件句柄。
+
+获取视频侦测分析结果，
+如果通道工作模式是 MD，它将获取到的是 MD结果；
+如果工作模式是 OD，它将获取到的是 OD结果
+HI_MPI_VDA_GetData(VdaChn, &stVdaData, HI_TRUE);
+
+SAMPLE_COMM_VDA_MdPrtSad(fp, &stVdaData);   打印SAD信息 VDA_MB_SAD_DATA_S
+SAMPLE_COMM_VDA_MdPrtObj(fp, &stVdaData);   打印Obj信息 VDA_OBJ_DATA_S
+SAMPLE_COMM_VDA_MdPrtAp(fp, &stVdaData);    打印Ap 信息 u32AlarmPixCnt
+
+HI_MPI_VDA_ReleaseData(VdaChn,&stVdaData);
+
+/* vda stop recv picture */
+s32Ret = HI_MPI_VDA_StopRecvPic(VdaChn);
+s32Ret = HI_MPI_SYS_UnBind(&stSrcChn, &stDestChn);
+s32Ret = HI_MPI_VDA_DestroyChn(VdaChn);
+
+最重要的数据结构
+/*MD data*/
+typedef struct hiVDA_MD_DATA_S
+{
+    HI_BOOL           bMbSadValid;     /*SAD data is valid?*/
+    VDA_MB_SAD_DATA_S stMbSadData;     /*MB SAD data*/          宏块的SAD值
+    
+    HI_BOOL           bObjValid;       /*OBJ data is valid?*/
+    VDA_OBJ_DATA_S    stObjData;       /*OBJ data*/             运动区域结果
+
+    HI_BOOL           bPelsNumValid;   /*alarm pixel number data is valid?*/   
+	HI_U32 			  u32AlarmPixCnt;  /*motion pix of picture*/               报警像素的总个数，辅助参数
+}VDA_MD_DATA_S;
+
+/*MB SAD data*/ 保存所有宏块的SAD值缓存
+typedef struct hiVDA_MB_SAD_DATA_S
+{
+    HI_VOID	   *pAddr;             /*address*/ 保存宏块SAD值的内存首地址
+    HI_U32		u32Stride;         /*stride*/  宏块数据，以字节为单位的，内存行宽度
+    VDA_MB_SADBITS_E enMbSadBits;  /*the MB SAD size*/ SAD值的位数：VDA_MB_SAD_8BIT VDA_MB_SAD_16BIT 
+}VDA_MB_SAD_DATA_S;
+
+/*OBJ data*/ 定义运动区域信息结构体
+typedef struct hiVDA_OBJ_DATA_S
+{
+    HI_U32 u32ObjNum;              /*OBJ number*/
+    VDA_OBJ_S	*pstAddr;          /*OBJ data address*/
+    
+    HI_U32 u32IndexOfMaxObj;       /*index of max OBJ*/
+    HI_U32 u32SizeOfMaxObj;        /*size of max OBJ*/
+	HI_U32 u32SizeOfTotalObj;      /*total size of all OBJ*/
+}VDA_OBJ_DATA_S;
+
+/*Motion Region Data*/ 定义运动区域信息结构体
+typedef struct hiVDA_OBJ_S
+{
+    HI_U16 u16Left;
+	HI_U16 u16Top;
+	HI_U16 u16Right;
+	HI_U16 u16Bottom;
+}VDA_OBJ_S;
+
+解释：
+SAD（Sum of Absolute Difference）=SAE（Sum of Absolute Error)即绝对误差和
+
+绝对残差和(Sum of Absolute Differences, SAD)
+变换域中的绝对残差和(Sum of Absolute Transformed Differences, SATD）
+
+SAD/SATD主要用于在帧间预测中, 进行运动搜索的时候,计算块匹配之间的代价的时候
+在进行模式选择的时候, 使用的是SAD, 或者SATD
+
+视频输入设备 
+Hi3518/Hi3516C 芯片只有一个 VI 设备，即 Dev0。 Dev0 支持 BT.656、BT.601、DC 协议输入，但不支持 BT.1120
+
+视频物理通道 
+Hi3518/Hi3516C VI 硬件单元仅包含 1 个 VI 视频物理通道，即 Chn0。不存在次通道， 但支持扩展通道。 物理通道支持的典型分辨率如 D1、720P@30、720P@60、1080P@30 等
+
+视频扩展通道 
+扩展通道是物理通道的扩展，主要实现缩放功能，其数据来源于物理通道。 Hi3518/Hi3516C 最多支持 16 个扩展通
+
+绑定关系 
+Hi3518/Hi3516C VI 的物理通道与所对应的设备固定绑定，不允许改变它们的绑定关 
+
+视频压缩流：
+typedef struct hiVENC_STREAM_S
+{
+    VENC_PACK_S *pstPack;       /*stream pack attribute*/
+    HI_U32      u32PackCount;   /*the pack number of one frame stream*/
+    HI_U32      u32Seq;         /*the list number of stream*/
+
+    union
+    {
+        VENC_STREAM_INFO_H264_S stH264Info;   /*the stream info of h264*/
+        VENC_STREAM_INFO_JPEG_S stJpegInfo;   /*the stream info of jpeg*/
+        VENC_STREAM_INFO_MPEG4_S stMpeg4Info; /*the stream info of mpeg4*/
+    };
+} VENC_STREAM_S;
+typedef struct hiVENC_PACK_S
+{
+    HI_U32   u32PhyAddr[2];         /*the physics address of stream*/
+    HI_U8   *pu8Addr[2];            /*the virtual address of stream*/
+    HI_U32   u32Len[2];             /*the length of stream*/
+
+    HI_U64   u64PTS;                /*PTS*/
+    HI_BOOL  bFieldEnd;             /*field end??*/
+    HI_BOOL  bFrameEnd;             /*frame end??*/
+
+    VENC_DATA_TYPE_U  DataType;     /*the type of stream*/
+} VENC_PACK_S;

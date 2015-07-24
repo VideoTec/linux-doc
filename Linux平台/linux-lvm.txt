@@ -1,0 +1,92 @@
+LVM 指令
+
+cat /etc/fstab  -> file system table
+[root@localhost ~]# cat /etc/fstab
+/dev/VolGroup00/LogVol00 /                       ext3    defaults        1 1
+LABEL=/boot             /boot                   ext3    defaults        1 2
+tmpfs                   /dev/shm                tmpfs   defaults        0 0
+devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
+sysfs                   /sys                    sysfs   defaults        0 0
+proc                    /proc                   proc    defaults        0 0
+/dev/VolGroup00/LogVol01 swap                    swap    defaults        0 0
+
+物理卷操作
+pvcreate pvscan pvdisplay pvremove
+卷组操作
+vgcreate vgscan vgdisplay vgextend vgreduce vgchange vgremove
+
+逻辑卷操作
+lvcreate lvscan lvdisplay lvextend lvreduce lvremove lvresize
+调整逻辑卷大小时，先查看卷组里有没有空余PE，然后把空余的PE加到指定的卷中
+lvresize -l +233 /dev/VolGroup00/LogVol00
+然后，用resize2fs命令把，新加的PE，格式化。
+resize2fs /dev/VolGroup00/LogVol00
+
+virtualbox 动态分配存储
+其实，vbox中，“虚拟分配空间”指的是这个虚拟磁盘在宿主盘上的最大值，而“实际分配空间”是指我的ubuntu的磁盘分区所占用的空间大小，刚才只是修改了宿主盘上的最大值，ubuntu的磁盘没变
+
+查看逻辑卷的信息，lvdisplay 和 free，知道分成两个逻辑卷
+/dev/mapper/VolGroup00-LogVol00  这个分配给跟目录
+/dev/mapper/VolGroup00-LogVol01  这个分配给了swap分区
+
+查看磁盘分区命令：
+pvdisplay  physical volume
+lvdisplay  logic volume
+vgdisplay  volume group
+
+LVM： 
+Logical Volume Manager逻辑卷管理，它是一种磁盘的管理方式，是Linux环境下对磁盘分区进行管理的一种机制，
+LVM是建立在硬盘和分区之上的一个逻辑层，来提高磁盘分区管理的灵活性。
+通过LVM系统管理员可以轻松管理磁盘分区。
+ 
+卷组volume group (VG)
+卷组是LVM中最高抽象层，是由一个或多个物理卷所组成的存储器池。
+ 
+物理卷physical volume (PV)
+典型的物理卷是硬盘分区，但也可以是整个硬盘或已创建的Software RAID 卷。
+ 
+逻辑卷logical volume (LV)
+逻辑卷相当于非LVM系统中的分区，它在卷组上建立，是一个标准的块设备，可以在其上建立文件系统。
+ 
+物理块physical extent (PE)
+物理卷按大小相等的“块”为单位存储，块的大小与卷组中逻辑卷块的大小相同。
+ 
+逻辑块logical extent (LE)
+逻辑卷按“块”为单位存储，在一卷组中的所有逻辑卷的块大小是相同的
+
+[root@ls ~]# lvscan 
+ACTIVE     '/dev/VolGroup00/LogVol00 '[15.91GB] inherit 
+ACTIVE           '/dev/VolGroup00/LogVol01' [3.97 GB] inherit
+
+pvcreate /dev/sda3 
+Physical volume "/dev/sda3"successfully created
+然后使用新的物理卷来扩展 LVM 的 VolGroup00
+vgextend VolGroup00 /dev/sda3
+
+先将分配过来的新磁盘空间创建为一个新的物理卷，
+[root@ls ~]# pvcreate /dev/sda3 
+Physical volume "/dev/sda3"successfully created
+然后使用新的物理卷来扩展 LVM 的 VolGroup00
+vgextend VolGroup00 /dev/sda3
+[root@ls ~]# vgextend VolGroup00 /dev/sda3
+  Volume group "VolGroup00" successfully extended
+然后扩展 LVM 的逻辑卷 VolGroup00/LogVol00
+[root@ls ~]# lvextend /dev/VolGroup00/LogVol00 /dev/sda3
+  Extending logical volume LogVol00 to 20.91 GB
+  Logical volume LogVol00 successfully resized
+最后，调整逻辑卷文件系统的大小，
+[root@ls ~]# resize2fs  /dev/VolGroup00/LogVol00
+resize2fs 1.39 (29-May-2006)
+Filesystem at /dev/VolGroup00/LogVol00 is mounted on /; on-line resizingrequired
+Performing an on-line resize of /dev/VolGroup00/LogVol00 to 5480448 (4k)blocks.
+The filesystem on /dev/VolGroup00/LogVol00 is now 5480448 blocks long.
+
+lvmdiskscan
+vgdisplay
+pvdisplay
+lvdispay
+vgcreate
+pvcreate
+lvscan
+pvscan
+vgscan

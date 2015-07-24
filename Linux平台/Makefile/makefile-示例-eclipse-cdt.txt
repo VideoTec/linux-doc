@@ -1,0 +1,73 @@
+组织方式，共有下面几类 makefile 文件
+
+debug/makefile
+debug/objects.mk   这个文件定义两个变量：USER_OBJS :=  和 LIBS :=
+debug/sources.mk   这个文件，不知道有什么作用
+debug/subdir.mk  或者 debug/src/subdir.mk  每个子目录都有一个
+
+------------------------------
+debug/makefile
+------------------------------
+最重要的一句
+# Tool invocations
+TestApp: $(OBJS) $(USER_OBJS)
+	gcc -L/workshop/IPC/trunk/IPClib -lm -o "TestApp" $(OBJS) $(USER_OBJS) $(LIBS) -lrt
+
+------------------------------
+debug/objects.mk 示例
+------------------------------
+USER_OBJS := /workshop/IPC/trunk/IPClib/libP2P.a /workshop/IPC/trunk/IPClib/libCamcradle.a /workshop/IPC/trunk/IPClib/libNetDevice.a /workshop/IPC/trunk/IPClib/libRecorder.a /workshop/IPC/trunk/IPClib/libRTSPSvr.a /workshop/IPC/trunk/IPClib/libVideosurv.a /workshop/IPC/trunk/IPClib/libNetwork.a /workshop/IPC/trunk/IPClib/libProtocol.a /workshop/IPC/trunk/IPClib/libMinixml.a /workshop/IPC/trunk/IPClib/libbase.a
+
+LIBS := -lpthread
+
+------------------------------
+debug/subdir.mk
+------------------------------
+
+C_SRCS += \
+../src/IPCNTPProto.c \
+../src/IPCStunProto.c \
+../src/IPCTCPProto.c \
+../src/IPCTurnProto.c \
+../src/IPCXmlProto.c \
+../src/PSPacketProto.c \
+../src/RTCPProto.c \
+../src/RTPProto.c \
+../src/RTSPPacketProto.c \
+../src/TSPacketProto.c 
+
+OBJS += \
+./src/IPCNTPProto.o \
+./src/IPCStunProto.o \
+./src/IPCTCPProto.o \
+./src/IPCTurnProto.o \
+./src/IPCXmlProto.o \
+./src/PSPacketProto.o \
+./src/RTCPProto.o \
+./src/RTPProto.o \
+./src/RTSPPacketProto.o \
+./src/TSPacketProto.o 
+
+C_DEPS += \
+./src/IPCNTPProto.d \
+./src/IPCStunProto.d \
+./src/IPCTCPProto.d \
+./src/IPCTurnProto.d \
+./src/IPCXmlProto.d \
+./src/PSPacketProto.d \
+./src/RTCPProto.d \
+./src/RTPProto.d \
+./src/RTSPPacketProto.d \
+./src/TSPacketProto.d 
+
+
+# Each subdirectory must supply rules for building sources it contributes
+src/%.o: ../src/%.c
+    Debug 版本：
+	gcc -I../../inc -O0 -g3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+
+	Rlease 版本
+	arm-hisiv100nptl-linux-gcc -D_MPP_VIDEO_CAPTURE -DSENSOR_TYPE=OMNI_OV9712_DC_720P_30FPS -I../../inc -I/workshop/IPC/trunk/inc/mpp/extdrv/tw2865 -I/workshop/IPC/trunk/inc/mpp -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+
+	arm-hisiv100nptl-linux-ar -r  "libbase-arm.a" $(OBJS) $(USER_OBJS) $(LIBS)
+	ar -r  "libbase.a" $(OBJS) $(USER_OBJS) $(LIBS)

@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------------
+可移植操作系统接口（英语：Portable Operating System Interface，缩写为POSIX），
+---------------------------------------------------------------------------------
+是IEEE为要在各种UNIX操作系统上运行软件，而定义API的一系列互相关联的标准的总称，
+其正式称呼为IEEE Std 1003，而国际标准名称为ISO/IEC 9945
+
+POSIX这个名称是由理查德·斯托曼应IEEE的要求而提议的一个易于记忆的名称。
+它基本上是Portable Operating System Interface（可移植操作系统接口）的缩写，而X则表明其对Unix API的传承
+
+Linux基本上逐步实现了POSIX兼容，但并没有参加正式的POSIX认证
+微软的Windows NT声称部分实现了POSIX标准
+
+当前的POSIX主要分为四个部分[2]：Base Definitions、System Interfaces、Shell and Utilities和Rationale

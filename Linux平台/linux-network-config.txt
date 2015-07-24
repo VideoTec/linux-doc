@@ -1,0 +1,18 @@
+/etc/sysconfig/network-scripts目录下的配置文件
+
+[root@localhost network-scripts]# cat ifcfg-eth0
+# Intel Corporation 82540EM Gigabit Ethernet Controller
+DEVICE=eth0
+BOOTPROTO=dhcp  //改为static即静态IP地址
+HWADDR=08:00:27:95:B2:1D
+ONBOOT=yes  //表示开机时启动网卡
+TYPE=Ethernet //网卡的类型
+USERCTL=no
+IPV6INIT=no
+PEERDNS=yes
+
+//改为static即静态IP地址 需要添加下列项
+IPADDR=192.168.1.72
+BROADCAST=192.168.1.255
+NETMASK=255.255.255.00
+NETWORK=192.168.1.0 子网地址

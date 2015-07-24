@@ -1,0 +1,34 @@
+conditional[英][kənˈdɪʃənl] [美][kənˈdɪʃənəl] n.条件（从句），条件语
+
+http://www.chemie.fu-berlin.de/chemnet/use/info/make/make_7.html#SEC69
+http://www.chemie.fu-berlin.de/chemnet/use/info/make/make_7.html
+
+################################################################################
+ifdef variable-name
+################################################################################
+
+If the variable variable-name has a non-empty value, the text-if-true is effective; 
+otherwise, the text-if-false, if any, is effective. Variables that have never been defined have an empty value. 
+Note that ifdef only tests whether a variable has a value. 
+It does not expand the variable to see if that value is nonempty. 
+Consequently, tests using ifdef return true for all definitions except those like foo =. 
+To test for an empty value, use ifeq ($(foo),). For example,
+
+bar =
+foo = $(bar)
+ifdef foo
+frobozz = yes
+else
+frobozz = no
+endif
+sets `frobozz' to `yes', while:
+foo =
+ifdef foo
+frobozz = yes
+else
+frobozz = no
+endif
+sets `frobozz' to `no'.
+
+配合： make 命令中定义变量，如
+make CATEGORY=parser TEST=basic.

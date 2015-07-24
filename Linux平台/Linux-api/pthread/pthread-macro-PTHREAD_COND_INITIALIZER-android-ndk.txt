@@ -1,0 +1,43 @@
+E:\android\ndk\platforms\android-14\arch-arm\usr\include\pthread.h
+
+#define PTHREAD_COND_INITIALIZER  {0}
+
+#define  __PTHREAD_MUTEX_INIT_VALUE            0
+#define  PTHREAD_MUTEX_INITIALIZER             {__PTHREAD_MUTEX_INIT_VALUE}
+
+代码：
+pq->mutex = PTHREAD_MUTEX_INITIALIZER;
+pq->cond = PTHREAD_COND_INITIALIZER;
+
+ndk-build 错误：
+In file included from ./packet_queue.c:3:0:
+./packet_queue.c: In function 'packet_queue_create':
+E:/android/ndk/platforms/android-14/arch-arm/usr/include/pthread.h:49:48: error:
+ expected expression before '{' token
+ #define  PTHREAD_MUTEX_INITIALIZER             {__PTHREAD_MUTEX_INIT_VALUE}
+                                                ^
+./packet_queue.c:15:15: note: in expansion of macro 'PTHREAD_MUTEX_INITIALIZER'
+   pq->mutex = PTHREAD_MUTEX_INITIALIZER;
+               ^
+E:/android/ndk/platforms/android-14/arch-arm/usr/include/pthread.h:92:35: error:
+ expected expression before '{' token
+ #define PTHREAD_COND_INITIALIZER  {0}
+                                   ^
+./packet_queue.c:16:14: note: in expansion of macro 'PTHREAD_COND_INITIALIZER'
+   pq->cond = PTHREAD_COND_INITIALIZER;
+
+http://stackoverflow.com/questions/17864095/c-pthread-mutex-expected-expression-before
+http://stackoverflow.com/questions/383293/pthread-mutex-t-init-error
+
+原因：只适用于初始化 pthread_mutex_t 或者 pthread_cond_t 变量。
+PTHREAD_MUTEX_INITIALIZER is a constant initializer, valid when in initialization only. 
+It is a macro that doesn't necessarily expand to an integral type.
+
+You can't use PTHREAD_MUTEX_INITIALIZER like that - 
+it has to be used as an initializer, not in a regular assignment expression
+
+解决方法一：
+pthread_mutex_init(&mute, NULL);
+
+解决方法二：
+q->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;

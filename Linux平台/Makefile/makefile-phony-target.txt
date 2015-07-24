@@ -1,0 +1,34 @@
+phony[英]['fəʊni:] [美][ˈfoni] adj.<口>假的，欺骗的
+
+http://www.chemie.fu-berlin.de/chemnet/use/info/make/make_4.html#SEC31
+Phony Targets
+
+-------------------------------------
+all 伪目标
+-------------------------------------
+all : prog1 prog2 prog3
+.PHONY : all
+
+prog1 : prog1.o utils.o
+cc -o prog1 prog1.o utils.o
+
+prog2 : prog2.o
+cc -o prog2 prog2.o
+
+prog3 : prog3.o sort.o utils.o
+cc -o prog3 prog3.o sort.o utils.o 
+
+我们声明了一个“all”的伪目标，其依赖于其它三个目标。
+由于伪目标的特性是，总是被执行的，所以其依赖的那三个目标就总是不如“all”这个目标新。
+所以，其它三个目标的规则总是会被决议。
+也就达到了我们一口气生成多个目标的目的。
+“.PHONY : all”声明了“all”这个目标为“伪目标”。
+
+使用 “.PHONY : all”声明了“all”这个目标为“伪目标” 的目标是为会了下面的情况
+防止有和伪目标名相同的文件名，出现歧意
+The phony target will cease to work if anything ever does create a file named `clean' in this directory. 
+Since it has no dependencies, the file `clean' would inevitably be considered up to date, and its commands would not be executed. 
+To avoid this problem, you can explicitly declare the target to be phony, 
+using the special target .PHONY (see section Special Built-in Target Names) as follows:
+
+.PHONY : clean

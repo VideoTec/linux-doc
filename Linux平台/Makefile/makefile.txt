@@ -1,0 +1,192 @@
+参考文档
+http://www.jfranken.de/homepages/johannes/vortraege/make_inhalt.en.html
+
+MAKEFILE 最重要的概念和基石
+“依赖关系”
+
+makefile 变量扩展规则
+目标 : 一般为文件名
+条件 ：一般为依赖的文件名称
+命令 ： sh命令
+
+makefile 变量
+大小区分
+不能包含 # : = 和 空格
+
+makefile 伪目标
+明确指定伪目标：双冒号 或者 .PHONY target
+
+Substitution[美][?s?bst??tu??n, -?tju-]代替 References
+makefile里的替换引用规则：用您指定的变量替换另一个变量
+$(var:a=b) 或 ${var:a=b}  其中:前后不要加空格，=号左边不要加空格，=右边可以加空格
+它的含义是把变量var中的每一个值结尾用b替换掉a
+
+makefile里的冒号等号，:=，expansion assignment， 翻译过来叫扩展赋值
+等号赋值符 =，当调用时才扩展。
+
+make 执行顺序
+By default, make starts with the first rule (not counting rules whose target names start with `.')
+"读到那句执行那句" ?
+
+输入make命令行：
+make reads the makefile in the current directory and begins by processing the first rule.
+
+% 百分号，是通配符
+
+makefile文件，变量之间的传递
+如果你要传递变量到下级Makefile中，那么你可以使用这样的声明：
+    export <variable ...>
+自定义的函数里，include子makefile。可以包含成功，但是其中的变量不能输出
+
+隐式规则：
+编译C程序的隐含规则：
+“<n>;.o”的目标的依赖目标会自动推导为“<n>;.c”，并且其生成命令是“$(CC) –c $(CPPFLAGS) $(CFLAGS)”
+
+makefile 预定义变量：
+makefile 自动变量：
+
+自定义隐式规则：
+%.o: %.c
+	gcc -c -o $@ $<
+
+makefile directive 指示符 ： include
+http://www.tutorialspoint.com/makefile/makefile_directives.htm
+
+gcc 生成静态库，命令GCC Archiver
+ar -r  "libbase.a"  ./src/RingBuffer.o ./src/cCommon.o ./src/fifopipe.o ./src/hmac_sha1.o ./src/md5.o ./src/sha1.o   
+Finished building target: libbase.a
+
+prerequisites cannot be defined in command scripts.
+
+GNU make的双冒号规则给我们提供一种根据依赖的更新情况而执行不同的命令来重建同一目标的机制
+
+make: Warning: File `Makefile' has modification time 3.7e+02 s in the future
+这个错误是因为，Makefile，文件的修改时间不对。调整文件的修改时间：
+touch -m Makefile  该文件的修改，修正为，当前时间。
+vim保存后，把文件的修改时间，修改了，注意，2014的地方应该是年份
+-rwxrwxrwx 1 root root     322 Nov 25  2014 Makefile
+
+make 自定义函数
+define 是用来定义一个变量的方法
+endef
+
+重要的问题，eval，扩展的代码，不正确
+解释下面的问题(@echo $$(OBJS) 这样就可以正常输出)(如果在include文件，就不需要加两个$符号)
+这个问题：和include的无关，和define无关，问题出在eval调用规则上
+在理解了函数“eval”二次展开的过程后。
+实际使用时，当函数的展开结果中存在引用（格式为：$(x)）时，那么在函数的参数中应该使用“$$”来代替“$”。
+因为这一点，所以通常它的参数中会使用函数“value”来取一个变量的文本值
+It’s important to realize that the eval argument is expanded twice; 
+first by the eval function, 
+then the results of that expansion are expanded again when they are parsed as makefile syntax.
+This means you may need to provide extra levels of escaping for “$” characters when using eval
+
+eval是怎么扩展的？
+见$符号就扩展吗？他扩展的结果是什么？$(OBJS) -> 扩展的时候，要到那里去找？
+$(1) $(2) ... 可以扩展成传进来的参数。$(OBJS) 扩展成什么？
+
+LIBS = src
+
+define TEST
+include src/Makefile    这里定义了OBJS,这个问题可以简化成，这里直接定义 OBJS := hello world
+DEP_LIBS:
+	@echo $(OBJS)       这个输出为空, 如果不在函数里，可以正常输出，如果放到子makefile也可以正常输出，即include common.mak
+	@echo $(LIBS)       这个输出是 src
+endef
+
+$(eval $(call TEST))
+all: DEP_LIBS           make all
+
+The way you are using it, there is no difference. However, if your GREP macro were a function that took parameters, you would have to use $(call) to pass parameters to it. For example:
+
+define GREP
+$(shell grep $1 $2)
+endef
+
+FOO:=$(call GREP,abc,words.txt)
+This causes $1 to be replaced with "abc", and $2 with "words.txt".
+
+See more in the GNU make manual on user-defined functions here: http://www.gnu.org/software/make/manual/make.html#Call-Function
+
+The call function is unique（唯一的） in that it can be used to create new parameterized functions. You can write a complex expression as the value of a variable, then use call to expand it with different values.
+
+解释下面自定义函数调用的问题
+define TEST
+SUBDIR := $(1)/oo
+clear::
+	@echo $(1)
+	@echo $$(SUBDIR)
+endef
+
+$(eval $(call TEST,first))        输出 fist second/oo
+$(eval $(call TEST,second))       输出 second second/oo
+上面的问题，可简化为下面的代码
+define TEST
+SUBDIR := $(1)
+$(1):
+	@echo $$(SUBDIR)
+endef
+
+$(eval $(call TEST,first))
+$(eval $(call TEST,second))
+调用 make first 和 make second 都是输出second
+下面的代码，也出现同样的问题
+V := v1
+$(V):
+	@echo $(V)
+V := v2
+$(V):
+	@echo $(V)
+调用 make v1 和 make v2 都是输出 v2
+理解makefile变量，最重要的一句话（是不是这个原因呢？十之八九是的）
+Variables and functions in all parts of a makefile are expanded when read, 
+except for the shell commands in rules, 
+更明确的解释：
+Variable substitution occurs at two distinct times, depending on where the variable is being used.
+Variables in dependency lines are expanded as the line is read. 
+Variables in shell commands are expanded when the shell command is executed.
+
+命令中的变量，怎么才能在读取时扩展？利用eval的扩展机制。
+
+call 和 eval有什么区别？call 会返回一个字符串
+define COMPILE
+	$(call $(1)DEP,$(1))
+	$($(1)) $($(1)FLAGS) $($(1)_DEPFLAGS) $($(1)_C) $($(1)_O) $<
+endef
+
+COMPILE_C = $(call COMPILE,CC)
+COMPILE_S = $(call COMPILE,AS)
+COMPILE_HOSTC = $(call COMPILE,HOSTCC)
+
+make常用参数
+-d 输出调试信息
+-t 或者 -touch 
+把所有目标文件的最后修改时间设置为当前系统时间
+
+-r 或者--no-builtin-rules 
+忽略隐规则，使之不起作用。该选项不会取消make内嵌的预定义变量
+
+还有一个在“嵌套执行”中比较有用的参数，“-w”或是“--print-directory”会在make的过程中输出一些信息，让你看到目前的工作目录
+
+函数的调用语法
+函数调用，很像变量的使用，也是以“$”来标识的，其语法为：$( )或${ }。
+参数间以逗号分隔，函数名和参数间以空格分隔。函数调用以“$”开头，以圆括号或花括号把函数名和参数括起
+
+在编译kernel时，发现如下的一些警告信息：
+warning: Clock skew detected. Your build may be incomplete.
+其原因是，当前系统的时间还在编译目录中的文件（包括源程序文件和编译后生成的.o目标文件）最后修改时间之前，
+比如我用“date”命令查看到的时间为2000年8月24日，而目录中文件最后的修改时间为2012年8月24日。
+解决方法是，首先应该“make clean”将之前编译的”.o”目标文件清除掉，然后再运行“make”进行编译，
+即使它再有这样的warning也没关系，因为所有的目标都会被重新编译。
+当然，要去掉这个warning，只需要将当前时间修改正确即可。
+可以用如下命令修改系统时间。
+
+#date -s 08/25/2012
+#date -s 13:12:00
+（或者：#date -s "08/25/2012 13:12:00"，这里的格式是 "MM/DD/YYYY hh:mm:ss")
+
+计划这样做：
+
+TestApp接收到消息：IPCPROTO_TCP_UPDATEVER 就调用 mftp 程序下载
+
+mftp 负责下载，验证，解压。如果成功就直接调用重启，如果验证失败，就通知TestApp

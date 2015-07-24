@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding=" UTF-8" ?> 
+<NOTIFY_PICTURE_REQ> 
+     <DevID>设备编码</ DevID> 
+     <ChannelNo>视频通道编号</ChannelNo> 
+     <FileName>文件名</FileName>  DevID_ChannelNo_YYYYMMDDHHMMSS.JPG
+     <Time>抓拍时间</Time> 
+</NOTIFY_PICTURE_REQ> 
+
+<?xml version="1.0" encoding=" UTF-8" ?> 
+<NOTIFY_PICTURE_RES> 
+     <DevID>设备编码</ DevID> 
+</NOTIFY_PICTURE_RES>

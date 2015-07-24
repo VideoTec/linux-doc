@@ -1,0 +1,3 @@
+基于文件描述符的I/O操作兼容POSIX标准
+
+http://linux.die.net/man/3/open

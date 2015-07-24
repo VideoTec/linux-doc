@@ -1,0 +1,131 @@
+先分析下面三个函数：
+
+E:\rhel-share\work\libRecorder\src\IPCRecord.c
+LoadRecPicPolicy();
+#define	RECORD_POLICY_CFG_XML_PATH	"/home/evc/config/config/recordpolicy.xml"
+RecordPolicyConfig*		g_pRecordPolicCfg		= NULL;
+
+E:\rhel-share\work\libRecorder\src\IPCRecord.c
+LoadRecordItems();
+#define	RECORD_VIDEO_CLIPS_PATH	"/home/evc/config/config/rec_video_clips.xml"
+VideoRecords						g_videoRecords;
+
+E:\rhel-share\work\libRTSPSvr\src\IPCRtspWorker.c
+"rtsp://%s:554/stream_chn0.264"
+StartRtpsService(); -> StartRtspTcpService( g_pRtspService );启动监听线程 -> StartSessionPool( RTSP_MAX_SESSION_COUNT,g_pRtspService );
+RtspService* 	g_pRtspService = NULL;
+RTSP监听线程：g_pTcpRtspListenThread = StartTcpWorker( pRtspService->szLocalIP,pRtspService->uLocalRtspPort,RtspServiceMsgHandler,30 );
+RTSP监听线程：int RtspServiceMsgHandler( void* param )
+RTSP单个会话线程： int RtspSessionWork( void* param )
+发送RTP数据包：void PostRtpPacket( RtspSession* pRtspSession )
+
+再分析下面两个函数：
+
+E:\rhel-share\work\libVideosurv\src\IPCVideoStreamRunner.c
+CreateH264StreamRunner(40,/*1,emuOutputType,*/g_pRtspService);
+启动线程：RtpH264StreamWork (开始编码：StartVenc)
+StartVideoStreamEnc:
+	IPCMPP_COMM_VI_StartVi( &pRunner->stViConfig );
+		HI_MPI_VI_SetDevAttr(ViDev, &stViDevAttr);
+		HI_MPI_VI_EnableDev(ViDev);
+		HI_MPI_VI_SetChnAttr(ViChn, &stChnAttr);
+		HI_MPI_VI_EnableChn(ViChn);
+	IPCMPP_COMM_VENC_Start
+		HI_MPI_VENC_CreateChn(VencChn, &stVencChnAttr);
+		HI_MPI_VENC_RegisterChn(VencGrp, VencChn);
+		HI_MPI_VENC_StartRecvPic(VencChn);
+
+CreateH264FileParser( 20,g_pRtspService );
+启动线程：RtpH264FileParserWork
+
+分析RecordPolicyConfig结构体
+typedef struct RecordPolicy{
+		sItemList*					pRecordPolicList;
+}RecordPolicy;
+typedef struct CapPicPolicy{
+		int									nStorage_type;
+		sItemList*					pCapPicPolicyList;
+}CapPicPolicy;
+typedef struct RecordPolicyConfig{
+		int									nChannel_No;
+		bool									bFullRecord;
+		bool									bLoopRecord;
+		RecordPolicy			_RecordPolicy;
+		CapPicPolicy			_CapPicPolicy;
+}RecordPolicyConfig;
+
+结构体 RtspService
+typedef struct RtspService
+{
+		sThreadParam* 			pStreamWorker;
+		sThreadParam* 			pFileWorker;
+
+		char										szLocalIP[256];
+		char										szRtspURL[256];
+		USHORT								uLocalRtspPort;
+		bool										bExit;
+		//sItemDeque*					pDeqRtpPackageData;
+		RtspSessionPool		rtspSessionPool;  记录所有的RTSP连接会话
+}RtspService;
+*
+ * 	rtsp session
+ */
+typedef struct RtspSession
+{
+		char												szSessionID[256];
+		sThreadParam* 					pSessionWorker;
+		sThreadParam* 					pStreamWorker;
+		bool												bUsing;
+		bool												bRealplay;
+		emuRtspSessionState		emuSessionState;
+		char												szSDPInfo[1024];
+		char												szTransport[512];
+		char												szRtpInfo[512];
+		int												nDurByFrame;
+		int												nStreamType;
+		emuNetworkType					emuNetworkMode;
+		sItemDeque*							pDeqRtpPackageData;
+		RtpPackets 							packetsData;
+}RtspSession;
+typedef struct RtspSessionPool
+{
+		int								nSessionPoolSize;
+		RtspSession*		pRtspSessionRef[RTSP_MAX_SESSION_COUNT];
+		sItemDeque*			pRtspSessionPool;
+		sItemList*				pRtspSessionUsedList;
+}RtspSessionPool;
+typedef struct RtpPacketData
+{
+		int									nDataLen;
+		unsigned char*		pPayloadData;
+}RtpPacketData;
+typedef struct RtpPackets
+{
+		int												nRtpPacketSize;
+		RtpPacketData						rtpPacketData[256];
+}RtpPackets;
+
+VideoRecords 结构体
+typedef struct VideoRecords{
+	int								nChannel;
+	sItemList*				pRecordList;
+}VideoRecords;
+
+链表（结构体）sItemList sItem
+typedef struct sItem
+{
+		void*										pData;
+		struct sItem*					pPrev;
+		struct sItem*					pNext;
+}sItem;
+typedef struct sItemList
+{
+		sItem*					pHead;
+		sItem*					pTail;
+		int							nItemCount;
+		sThreadLocker			locker;
+}sItemList;
+
+分析下面两个宏
+
+#define	RECORD_VIDEO_BASEPATH "/mnt/sd/"

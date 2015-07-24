@@ -1,0 +1,13 @@
+ctrl + t
+
+终端窗口的快捷方式
+shift + ctrl + n
+shift + ctrl + t
+shift + ctrl + q
+
+shift + ctrl + c
+shift + ctrl + v
+
+ctrl + - 放大
+ctrl + + 缩小     注意这个一般是加 shift 才是加号
+ctrl + 0 正常尺寸

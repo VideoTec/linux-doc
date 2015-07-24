@@ -1,0 +1,2 @@
+pthread_attr_setdetachstate()：设置线程属性变量的detachstate属性（决定线程在终止时是否可以被joinable）
+pthread_attr_getdetachstate()：获取脱离状态的属性

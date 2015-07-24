@@ -1,0 +1,8 @@
+barrier[英][ˈbæriə(r)] [美][ˈbæriɚ]
+n.障碍；屏障；栅栏；分界线
+
+同步屏障函数
+
+pthread_barrier_init(): 同步屏障初始化
+pthread_barrier_wait():
+pthread_barrier_destory():

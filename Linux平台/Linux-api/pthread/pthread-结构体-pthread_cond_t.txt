@@ -1,0 +1,12 @@
+条件变量函数：
+
+pthread_cond_init()：初始化条件变量
+pthread_cond_destroy()：销毁条件变量
+
+pthread_cond_signal(): 发送一个信号给正在当前条件变量的线程队列中处于阻塞等待状态的线程，使其脱离阻塞状态，唤醒后继续执行。如果没有线程处在阻塞等待状态，pthread_cond_signal也会成功返回。一般只给一个阻塞状态的线程发信号。假如有多个线程正在阻塞等待当前条件变量，则根据各等待线程优先级的高低确定哪个线程接收到信号开始继续执行。如果各线程优先级相同，则根据等待时间的长短来确定哪个线程获得信号。但pthread_cond_signal在多处理器上可能同时唤醒多个线程，当只能让一个被唤醒的线程处理某个任务时，其它被唤醒的线程就需要继续wait。POSIX规范要求pthread_cond_signal至少唤醒一个pthread_cond_wait上的线程，有些实现为了简便，在单处理器上也会唤醒多个线程。所以最好对pthread_cond_wait()使用while循环对条件变量是否满足做条件判断。
+
+pthread_cond_wait(): 等待条件变量的特殊条件发生；pthread_cond_wait() 必须与一个pthread_mutex配套使用。该函数调用实际上依次做了3件事：对当前pthread_mutex解锁、把当前线程挂起到当前条件变量的线程队列、被其它线程的信号唤醒后对当前pthread_mutex申请加锁。如果线程收到一个信号被唤醒，将被配套的互斥锁重新锁住，pthread_cond_wait() 函数将不返回直到线程获得配套的互斥锁。需要注意的是，一个条件变量不应该与多个互斥锁配套使用。
+
+pthread_cond_broadcast(): 某些应用，如线程池，pthread_cond_broadcast唤醒全部线程，但我们通常只需要一部分线程去做执行任务，所以其它的线程需要继续wait.
+
+pthread_condattr_(): 条件变量属性相关的函数

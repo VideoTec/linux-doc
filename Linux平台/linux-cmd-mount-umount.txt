@@ -1,0 +1,13 @@
+mount -t vboxsf share /mnt/share_windows  //加载 virtual-box 的共享目录
+                                           //共享名称 share 不区分大小写
+
+umount /mnt/share_windows
+
+加载 nfs 共享目录：
+mount 192.168.1.222:/mnt/share /mnt/share 失败出下面的错误
+mount: mounting 192.168.0.101:/home/share on /nfsroot failed: Permission denied
+mount 192.168.1.222:/home/wangxiang /mnt/share 成功
+
+比较两个文件夹的权限
+drwx------ 22 wangxiang wangxiang 4096 Nov 21 03:34 wangxiang
+drwxrwxrwx 1 1100 110 4096 Dec 31 08:02 share

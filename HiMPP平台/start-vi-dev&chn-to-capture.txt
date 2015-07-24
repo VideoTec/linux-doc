@@ -1,0 +1,271 @@
+启动 VI 设备
+开始捕获图像
+
+    /******************************************
+     step 3: start vi dev & chn to capture
+    ******************************************/   
+    stViConfig.enViMode   = SENSOR_TYPE;
+    stViConfig.enRotate   = ROTATE_NONE;
+    stViConfig.enNorm     = VIDEO_ENCODING_MODE_AUTO;
+    stViConfig.enViChnSet = VI_CHN_SET_NORMAL;
+    s32Ret = SAMPLE_COMM_VI_StartVi(&stViConfig);
+    if (HI_SUCCESS != s32Ret)
+    {
+        SAMPLE_PRT("start vi failed!\n");
+        goto END_VENC_SNAP_1;
+    }
+
+typedef struct sample_vi_config_s
+{
+    SAMPLE_VI_MODE_E enViMode;
+    VIDEO_NORM_E enNorm;           /*DC: VIDEO_ENCODING_MODE_AUTO */    
+    ROTATE_E enRotate;
+    SAMPLE_VI_CHN_SET_E enViChnSet;    
+}SAMPLE_VI_CONFIG_S;
+
+定义视频输入制式类型
+typedef enum hiVIDEO_NORM_E 
+{ 
+ VIDEO_ENCODING_MODE_PAL=0, 
+ VIDEO_ENCODING_MODE_NTSC, 
+ VIDEO_ENCODING_MODE_AUTO,  自动识别制式
+ VIDEO_ENCODING_MODE_BUTT, 
+} VIDEO_NORM_E; 
+
+typedef enum hiROTATE_E
+{
+    ROTATE_NONE = 0,
+    ROTATE_90   = 1,
+    ROTATE_180  = 2,
+    ROTATE_270  = 3,
+    ROTATE_BUTT
+} ROTATE_E;
+
+typedef enum sample_vi_chn_set_e
+{
+    VI_CHN_SET_NORMAL = 0,      /* mirror, flip close */
+    VI_CHN_SET_MIRROR,          /* open MIRROR */
+    VI_CHN_SET_FLIP,            /* open filp */
+    VI_CHN_SET_FLIP_MIRROR      /* mirror, flip */
+}SAMPLE_VI_CHN_SET_E;
+
+typedef enum sample_vi_mode_e
+{
+    APTINA_AR0130_DC_720P_30FPS = 0,
+    APTINA_9M034_DC_720P_30FPS,
+    SONY_ICX692_DC_720P_30FPS,
+    SONY_IMX104_DC_720P_30FPS,
+    SONY_IMX122_DC_1080P_30FPS,
+    OMNI_OV9712_DC_720P_30FPS,
+    SAMPLE_VI_MODE_1_D1,
+}SAMPLE_VI_MODE_E;
+
+启动 VI 模块的函数
+HI_S32 SAMPLE_COMM_VI_StartVi(SAMPLE_VI_CONFIG_S* pstViConfig)
+{
+    HI_S32 s32Ret = HI_SUCCESS;
+    SAMPLE_VI_MODE_E enViMode;
+    VIDEO_NORM_E enNorm;
+
+    if(!pstViConfig)
+    {
+        SAMPLE_PRT("%s: null ptr\n", __FUNCTION__);
+        return HI_FAILURE;
+    }
+    enViMode = pstViConfig->enViMode;
+    enNorm = pstViConfig->enNorm;
+
+    if(!IsSensorInput(enViMode))
+    {
+        s32Ret = SAMPLE_COMM_VI_StartBT656(enViMode, enNorm);
+    }
+    else
+    {
+        s32Ret = SAMPLE_COMM_VI_StartIsp(pstViConfig);
+    }
+
+
+    return s32Ret; 
+}
+
+/*****************************************************************************
+* function : star vi according to product type
+*****************************************************************************/
+HI_S32 SAMPLE_COMM_VI_StartBT656(SAMPLE_VI_MODE_E enViMode, VIDEO_NORM_E enNorm)
+{
+    VI_DEV ViDev;
+    VI_CHN ViChn;
+    HI_S32 i;
+    HI_S32 s32Ret;
+    SAMPLE_VI_PARAM_S stViParam;
+    SIZE_S stTargetSize;
+    RECT_S stCapRect;
+    
+    /*** get parameter from Sample_Vi_Mode ***/
+    s32Ret = SAMPLE_COMM_VI_Mode2Param(enViMode, &stViParam);
+    if (HI_SUCCESS !=s32Ret)
+    {
+        SAMPLE_PRT("vi get param failed!\n");
+        return HI_FAILURE;
+    }
+    
+    s32Ret = SAMPLE_COMM_VI_Mode2Size(enViMode, enNorm, &stTargetSize);
+    if (HI_SUCCESS !=s32Ret)
+    {
+        SAMPLE_PRT("vi get size failed!\n");
+        return HI_FAILURE;
+    }
+    
+    /*** Start AD ***/
+    s32Ret = SAMPLE_COMM_VI_ADStart(enViMode, enNorm);
+    if (HI_SUCCESS !=s32Ret)
+    {
+        SAMPLE_PRT("Start AD failed!\n");
+        return HI_FAILURE;
+    }
+    
+    /*** Start VI Dev ***/
+    for(i=0; i<stViParam.s32ViDevCnt; i++)
+    {
+        ViDev = i * stViParam.s32ViDevInterval;
+        s32Ret = SAMPLE_COMM_VI_StartDev(ViDev, enViMode);
+        if (HI_SUCCESS != s32Ret)
+        {
+            SAMPLE_PRT("SAMPLE_COMM_VI_StartDev failed with %#x\n", s32Ret);
+            return HI_FAILURE;
+        }
+    }
+    
+    /*** Start VI Chn ***/
+    for(i=0; i<stViParam.s32ViChnCnt; i++)
+    {
+        ViChn = i * stViParam.s32ViChnInterval;
+        
+        stCapRect.s32X = 0;
+        stCapRect.s32Y = 0;
+        switch (enViMode)
+        {
+            case SAMPLE_VI_MODE_1_D1:
+                stCapRect.u32Width = 720;
+                stCapRect.u32Height = (VIDEO_ENCODING_MODE_PAL==enNorm)?576:480;
+                break;
+                
+            default:
+                SAMPLE_PRT("vi mode invaild!\n");
+                return HI_FAILURE;
+        }
+        
+        s32Ret = SAMPLE_COMM_VI_StartChn(ViChn, &stCapRect, &stTargetSize, NULL);
+        if (HI_SUCCESS != s32Ret)
+        {
+            SAMPLE_PRT("call SAMPLE_COMM_VI_StarChn failed with %#x\n", s32Ret);
+            return HI_FAILURE;
+        }         
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 SAMPLE_COMM_VI_StartIsp(SAMPLE_VI_CONFIG_S* pstViConfig)
+{
+    HI_S32 i, s32Ret = HI_SUCCESS;
+    VI_DEV ViDev;
+    VI_CHN ViChn;
+    HI_U32 u32DevNum = 1;
+    HI_U32 u32ChnNum = 1;
+    SIZE_S stTargetSize;
+    RECT_S stCapRect;
+    SAMPLE_VI_MODE_E enViMode;
+    ROTATE_E enRotate;
+    SAMPLE_VI_CHN_SET_E enViChnSet;
+
+    if(!pstViConfig)
+    {
+        SAMPLE_PRT("%s: null ptr\n", __FUNCTION__);
+        return HI_FAILURE;
+    }
+    enViMode = pstViConfig->enViMode;
+    enViChnSet = pstViConfig->enViChnSet;
+    enRotate = pstViConfig->enRotate;
+
+    /******************************************
+     step 1: configure sensor.
+     note: you can jump over this step, if you do not use Hi3518 interal isp. 
+    ******************************************/
+    s32Ret = SAMPLE_COMM_ISP_SensorInit();
+    if (HI_SUCCESS != s32Ret)
+    {
+        SAMPLE_PRT("%s: Sensor init failed!\n", __FUNCTION__);
+        return HI_FAILURE;
+    }
+
+    /******************************************************
+     step 2 : config & start vicap dev
+    ******************************************************/
+    for (i = 0; i < u32DevNum; i++)
+    {
+        ViDev = i;
+        s32Ret = SAMPLE_COMM_VI_StartDev(ViDev, enViMode);
+        if (HI_SUCCESS != s32Ret)
+        {
+            SAMPLE_PRT("%s: start vi dev[%d] failed!\n", __FUNCTION__, i);
+            return HI_FAILURE;
+        }
+    }
+
+    /******************************************
+     step 3: configure & run isp thread 
+     note: you can jump over this step, if you do not use Hi3518 interal isp. 
+     note: isp run must at this step -- after vi dev enable, before vi chn enable 
+    ******************************************/
+    s32Ret = SAMPLE_COMM_ISP_Run();
+    if (HI_SUCCESS != s32Ret)
+    {
+        SAMPLE_PRT("%s: ISP init failed!\n", __FUNCTION__);
+	/* disable videv */
+        return HI_FAILURE;
+    }
+    /******************************************************
+    * Step 4: config & start vicap chn (max 1) 
+    ******************************************************/
+    for (i = 0; i < u32ChnNum; i++)
+    {
+        ViChn = i;
+
+        stCapRect.s32X = 0;
+        stCapRect.s32Y = 0;
+        switch (enViMode)
+        {
+            case APTINA_9M034_DC_720P_30FPS:
+            case APTINA_AR0130_DC_720P_30FPS:
+            case SONY_ICX692_DC_720P_30FPS:
+            case SONY_IMX104_DC_720P_30FPS:
+            case OMNI_OV9712_DC_720P_30FPS:
+                stCapRect.u32Width = 1280;
+                stCapRect.u32Height = 720;
+                break;
+
+            case SONY_IMX122_DC_1080P_30FPS:
+                stCapRect.u32Width = 1920;
+                stCapRect.u32Height = 1080;
+                break;
+                
+            default:
+                stCapRect.u32Width = 1280;
+                stCapRect.u32Height = 720;
+                break;
+        }
+
+        stTargetSize.u32Width = stCapRect.u32Width;
+        stTargetSize.u32Height = stCapRect.u32Height;
+
+        s32Ret = SAMPLE_COMM_VI_StartChn(ViChn, &stCapRect, &stTargetSize, pstViConfig);
+        if (HI_SUCCESS != s32Ret)
+        {
+            SAMPLE_COMM_ISP_Stop();
+            return HI_FAILURE;
+        }
+    }
+
+    return s32Ret;
+}

@@ -1,0 +1,6 @@
+http://pubs.opengroup.org/onlinepubs/7908799/xsh/pthread_cond_wait.html
+
+#include <pthread.h>
+
+int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex);
+int pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *abstime);

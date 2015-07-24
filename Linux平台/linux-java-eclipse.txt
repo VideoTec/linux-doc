@@ -1,0 +1,76 @@
+检查Linux 系统上是否存在其它版本的JDK，如果有则先卸载旧版本的JKD
+java -version
+
+[root@getlnx06 ~]# rpm -qa | grep gcj
+libgcj-4.1.2-51.el5
+java-1.4.2-gcj-compat-1.4.2.0-40jpp.115
+libgcj-4.1.2-51.el5
+
+
+卸载自带的JDK的信息 - 不能用，不知道什么问题
+[root@localhost /]# rpm -e --nodeps java-1.4.2-gcj-compat-1.4.2.0-40jpp.115
+
+卸载JAVA：
+打开终端输入 yum remove java
+
+安装JDK：
+1. 创建目录 /usr/java/  把tar解压到这个目录
+tar xzvf jdk-7u25-linux-x64.tar.gz -C /usr/java/
+
+2. 添加环境变量
+在etc/profile文件下添加,在profile文件末尾加入
+
+export JAVA_HOME=/usr/java/jdk1.7.0_25
+export CLASSPATH=/usr/java/jdk1.7.0_25/lib
+export PATH=$JAVA_HOME/bin:$PATH
+
+如果你不想重新系统，可以用命令source /etc/profile使配置文件立即生效。
+否则只能重启系统才能使配置参数生效。
+
+
+eclipse 提示错误：
+a java runtime environment(jre) or java development kit(jdk) must be available in order to run eclipse. no java virtual machine was found after searching the following locations:
+/home/wangxiang/eclipse/jre/bin/java java in your current PATH
+
+UBUNTU可以设置PATH的地方很多，包括
+
+/etc/profile     ---> source /etc/profile 只在当前终端有效，重启后，才能全局有效
+/etc/environment
+/etc/bash.bashrc
+~/.bashrc
+
+只有在/etc/environment里设置，才能在init时候就生效
+
+
+安装CDT 
+官方方法在线方法：
+http://www.eclipse.org/cdt/downloads.php
+p2 software repository:
+CDT 8.5.0 for Eclipse Lunacd/
+http://download.eclipse.org/tools/cdt/releases/8.5
+CDT 8.3.0 for Eclipse Kepler
+http://download.eclipse.org/tools/cdt/releases/kepler （这个连接不上）
+
+(1) 选择"Help"-->"Install New Software"，在弹出"Available Software"对话框。
+(2) 在"Work with:"框输入http://download.walware.de/eclipse-3.8，（输入后，按回车）下载最新的StatET
+
+安装包方法：
+http://www.cnblogs.com/oomusou/archive/2006/11/11/557741.html
+C、 安装CDT 
+      i. (将档案org.eclipse.cdt-3.1.1-linux.x86.tar.gz下载到桌面) 
+
+      ii. [root@localhost ~]#cp ~/Desktop/org.eclipse.cdt-3.1.1-linux.x86.tar.gz . 
+
+      iii. (将org.eclipse.cdt-3.1.1-linux.x86.tar.gz解压缩) 
+      [root@localhost ~]#tar –zxvf org.eclipse.cdt-3.1.1-linux.x86.tar.gz
+      (档案将解到~/eclipse目录下) 
+
+      iv. (安装CDT plugin)
+      [root@localhost ~]cp –r eclipse/plugins/. /usr/local/eclipse/plugins/ 
+	  
+	  
+导入已经存在的工程
+	  直接用genaral导入或andorid project导入即可
+
+eclipse启动参数
+[E:\android\adt\eclipse\eclipse.exe -data %work_dir%]

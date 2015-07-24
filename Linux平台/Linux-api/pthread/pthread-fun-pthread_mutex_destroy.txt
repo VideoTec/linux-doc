@@ -1,0 +1,24 @@
+http://pubs.opengroup.org/onlinepubs/7908799/xsh/pthread_mutex_init.html
+
+#include <pthread.h>
+
+int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr);
+int pthread_mutex_destroy(pthread_mutex_t *mutex);
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+The pthread_mutex_destroy() function destroys the mutex object referenced by mutex; 
+the mutex object becomes, in effect, uninitialised. 
+An implementation may cause pthread_mutex_destroy() to set the object referenced by mutex to an invalid value. 
+A destroyed mutex object can be re-initialised using pthread_mutex_init(); 
+the results of otherwise referencing the object after it has been destroyed are undefined.
+
+It is safe to destroy an initialised mutex that is unlocked. 
+Attempting to destroy a locked mutex results in undefined behaviour.
+
+返回值：
+If successful, the pthread_mutex_init() and pthread_mutex_destroy() functions return zero. 
+Otherwise, an error number is returned to indicate the error. 
+The [EBUSY] and [EINVAL] error checks, 
+if implemented, act as if they were performed immediately 
+at the beginning of processing for the function and cause an error 
+return prior to modifying the state of the mutex specified by mutex.

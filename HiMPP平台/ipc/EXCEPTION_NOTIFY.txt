@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding=" UTF-8" ?> 
+<EXCEPTION_NOTIFY_REQ> 
+    <DevID>设备编码</DevID> 
+   <ChannelNo>视频通道编号</ChannelNo> 
+    <ExceptionType>错误类型，0 表示未知错误，由描述信息为准
+</ExceptionType> 
+    <ExceptionDesc>异常描述信息</ExceptionDesc> 
+</EXCEPTION_NOTIFY_REQ>
+
+<?xml version="1.0" encoding=" UTF-8" ?> 
+<EXCEPTION_NOTIFY_RES> 
+    <Result>结果</Result> 
+    <DevID>设备编码</DevID> 
+</EXCEPTION_NOTIFY_RES>

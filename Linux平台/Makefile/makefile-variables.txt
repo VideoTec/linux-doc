@@ -1,0 +1,50 @@
+理解makefile变量，最重要的一句话
+Variables and functions in all parts of a makefile are expanded when read, 
+except for the shell commands in rules, 
+更明确的解释：
+Variable substitution[ˌsʌbstɪˈtuʃən, -ˈtju-]替换 occurs at two distinct[美][dɪˈstɪŋkt]不同的 times, depending on where the variable is being used.
+Variables in dependency lines are expanded as the line is read. 
+Variables in shell commands are expanded when the shell command is executed.
+
+the right-hand sides of variable definitions using `=', and 
+the bodies of variable definitions using the define directive.
+
+makefile变量的第一个规则：递归扩展
+The first flavor of variable is a recursively expanded variable
+CFLAGS = $(CFLAGS) -O //解释这行代码为什么会引发死循环？
+
+makefile变量的第一个规则：简单扩展
+Simply expanded variables are defined by lines using `:='
+CFLAGS := $(CFLAGS) -O //这个不是递归扩展，所以不会死循环
+
+变量类型：
+Variable classes
+The four different classes of variables (in order of increasing precedence) are:
+
+Environment variables 环境变量
+Variables defined as part of make's environment.
+
+Global variables 全局变量
+Variables defined in the makefile or in included makefiles.
+
+Command line variables 命令行变量
+Variables defined as part of the command line.
+
+Local variables 局部变量
+Variables that are defined specific to a certain target
+
+几种局部变量
+.ALLSRC
+The list of all sources for this target; also known as `>'.
+.ARCHIVE
+The name of the archive file.
+.IMPSRC
+In suffix-transformation rules, the name/path of the source from which the target is to be transformed (the ``implied'' source); also known as `<'. It is not defined in explicit rules.
+.MEMBER
+The name of the archive member.
+.OODATE
+The list of sources for this target that were deemed out-of-date; also known as `?'.
+.PREFIX
+The file prefix of the file, containing only the file portion, no suffix or preceding directory components; also known as `*'.
+.TARGET
+The name of the target; also known as `@'.

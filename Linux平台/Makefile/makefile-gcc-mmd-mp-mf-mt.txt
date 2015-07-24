@@ -1,0 +1,60 @@
+解释下面的句子的函意思
+gcc -I../../inc -O0 -g3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+
+----------------------------------------------------------------------
+M/MM  MD/MMD
+----------------------------------------------------------------------
+“-M” 参数 会把一些标准库的头文件也包含进来
+“-MM”参数 不包含标准库里的头文件
+
+
+----------------------------------------------------------------------
+M MD 的区别 和 MM MMD 的区别
+----------------------------------------------------------------------
+gcc -M t.c    输出依赖关系，不写文件
+gcc -MD t.c   会把依赖关系写到 *.d 文件里
+
+
+----------------------------------------------------------------------
+MF  MT  默认情况下 *.o 的文件名是不用修改的，就不需要这两个参数
+
+-MF很好理解，就是输出依赖文件名      F 代表 FILE
+-MT就是说在输出的依赖文件中的目标    T 代表 TARGET
+----------------------------------------------------------------------
+CC_DEPFLAGS=-MMD -MF $(@:.o=.d) -MT $@
+解释：
+MF 输出依赖文件名 *.d
+MT 输出的依赖文件中的目标 *.o
+
+When used with the driver options -MD or -MMD, -MF overrides the default dependency output file
+就会生成 p.o 和 p.d (保存依赖关系），这是因为你用了-o参数指定了名字
+
+----------------------------------------------------------------------
+-MP 对于target依赖的每一个文件除了主文件之外都生成一个依赖
+----------------------------------------------------------------------
+
+-MP
+This option instructs CPP to add a phony target for each dependency other than the main file, causing each to depend on nothing. 
+These dummy rules work around errors make gives if you remove header files without updating the Makefile to match.
+This is typical output:
+
+          test.o: test.c test.h
+          
+          test.h:
+
+----------------------------------------------------------------------
+查看文档
+https://gcc.gnu.org/onlinedocs/gcc-4.2.1/gcc/Preprocessor-Options.html
+----------------------------------------------------------------------
+-MG
+In conjunction with an option such as -M requesting dependency generation, 
+-MG assumes missing header files are generated files and adds them to the dependency list without raising an error. 
+The dependency filename is taken directly from the #include directive without prepending any path. 
+-MG also suppresses preprocessed output, as a missing header file renders this useless.
+This feature is used in automatic updating of makefiles. 
+
+-MQ target
+Same as -MT, but it quotes any characters which are special to Make. -MQ '$(objpfx)foo.o' gives
+          $$(objpfx)foo.o: foo.c
+     
+The default target is automatically quoted, as if it were given with -MQ. 

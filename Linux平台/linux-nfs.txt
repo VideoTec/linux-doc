@@ -1,0 +1,34 @@
+查看状态
+service portmap status
+service nfs status
+如果未启动，启动服务
+service nfs start
+查看编辑，配置文件
+/etc/exports ：最后一个选项：ro / rw / sync
+示例：/home/wangxiang 192.168.1.226(rw,sync,no_root_squash)
+重启，NFS，应用
+
+客户端，加载，查看，共享目录
+查看指定IP的共享目录：showmount -e 192.168.1.222
+加载共享目录：mount 192.168.1.222:/home/wangxiang /mnt/share
+
+为什么服务器指定IP地址共享，客户端不能MOUNT？同一情况下，修改成*，客户端就可以mount了。
+
+mount: mounting 192.168.0.101:/home/share on /nfsroot failed: Permission denied
+是因为NFS 服务器端共享的目录本身的写权限没有开放给其他用户，在服务器端打开该权限
+除了文件权限，还要看指定的用户
+
+1. 可以修改共享文件的权限：chmod 777 -R /home/wangxiang
+2. 可以修改/etc/exports里指定的权限
+
+mount 192.168.1.222:/mnt/share /mnt/share 失败出下面的错误
+mount: mounting 192.168.0.101:/home/share on /nfsroot failed: Permission denied
+mount 192.168.1.222:/home/wangxiang /mnt/share 成功
+
+比较两个文件夹的权限
+drwx------ 22 wangxiang wangxiang 4096 Nov 21 03:34 wangxiang
+drwxrwxrwx 1 1100 110 4096 Dec 31 08:02 share
+
+从IPC设备，mount失败，加入下面的先期，就可以了。
+mount -t nfs -o nolock 192.168.1.124:/workshop/ipcamboard/images/drivers nfs
+mount -o nolock 192.168.0.71:/homme/ipc-bin /mnt/nfs

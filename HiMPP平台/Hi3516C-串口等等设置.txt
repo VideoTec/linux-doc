@@ -1,0 +1,159 @@
+https://cavaliers98.oicp.net/svn/IPC/trunk
+
+安装交叉编译工具链：
+/opt/hisi-linux-nptl/arm-hisiv100-linux/target/bin
+arm-hisiv100nptl-linux-
+
+SENSOR_TYPE=OMNI_OV9712_DC_720P_30FPS
+
+gcc -I../../inc -O0 -g3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+gcc -I../../inc -O0 -g3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP -MF"src/sha1.d" -MT"src/sha1.d" -o "src/sha1.o" "../src/sha1.c"
+
+arm-hisiv100nptl-linux-gcc -DSENSOR_TYPE=OMNI_OV9712_DC_720P_30FPS -I/workshop/IPC/trunk/inc -I/workshop/IPC/trunk/inc/mpp -I/workshop/IPC/trunk/inc/mpp/extdrv/tw2865 -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/mpp_comm_vpss.d" -MT"src/mpp_comm_vpss.d" -o "src/mpp_comm_vpss.o" "../src/mpp_comm_vpss.c"
+arm-hisiv100nptl-linux-ar -r  "libDeviceCam-arm.a"  ./src/IPCCamDevice.o ./src/gpio.o ./src/mpp_comm_isp.o ./src/mpp_comm_sys.o ./src/mpp_comm_vda.o ./src/mpp_comm_venc.o ./src/mpp_comm_vi.o ./src/mpp_comm_vpss.o 
+
+arm-hisiv100nptl-linux-gcc -D_MPP_VIDEO_CAPTURE -DSENSOR_TYPE=OMNI_OV9712_DC_720P_30FPS -I../../inc -I/workshop/IPC/trunk/inc/mpp/extdrv/tw2865 -I/workshop/IPC/trunk/inc/mpp -O3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+Finished building: ../src/main.c  
+
+arm-hisiv100nptl-linux-gcc -D_MPP_VIDEO_CAPTURE -DSENSOR_TYPE=OMNI_OV9712_DC_720P_30FPS -I../../inc -I/workshop/IPC/trunk/inc/mpp/extdrv/tw2865 -I/workshop/IPC/trunk/inc/mpp -O3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/mainfrm.d" -MT"src/mainfrm.d" -o "src/mainfrm.o" "../src/mainfrm.c"
+
+arm-hisiv100nptl-linux-gcc -L/workshop/IPC/trunk/IPClib -L/workshop/IPC/trunk/IPClib/mpp -lm -o "TestApp-arm"  ./src/main.o ./src/mainfrm.o  /workshop/IPC/trunk/IPClib/libRTSPSvr-arm.a /workshop/IPC/trunk/IPClib/libNetDevice-arm.a /workshop/IPC/trunk/IPClib/libRecorder-arm.a /workshop/IPC/trunk/IPClib/libVideosurv-arm.a /workshop/IPC/trunk/IPClib/libDeviceCam-arm.a /workshop/IPC/trunk/IPClib/libCamcradle-arm.a /workshop/IPC/trunk/IPClib/mpp/libmpi.a /workshop/IPC/trunk/IPClib/mpp/libaec.a /workshop/IPC/trunk/IPClib/mpp/libanr.a /workshop/IPC/trunk/IPClib/mpp/libVoiceEngine.a /workshop/IPC/trunk/IPClib/mpp/libisp.a /workshop/IPC/trunk/IPClib/mpp/libresampler.a /workshop/IPC/trunk/IPClib/mpp/libsns_ov9712.a /workshop/IPC/trunk/IPClib/libP2P-arm.a /workshop/IPC/trunk/IPClib/libNetwork-arm.a /workshop/IPC/trunk/IPClib/libProtocol-arm.a /workshop/IPC/trunk/IPClib/libMinixml-arm.a /workshop/IPC/trunk/IPClib/libbase-arm.a -lpthread
+
+
+Hi3516C[root@localhost arm-hisiv200-linux]# ./cross.install
+CROSS_COMPILER_PATH=/opt/hisi-linux/x86-arm/arm-hisiv200-linux/target/bin
+Do not have version file
+mkdir: created directory `/opt/hisi-linux'
+mkdir: created directory `/opt/hisi-linux/x86-arm'
+mkdir: created directory `/opt/hisi-linux/x86-arm/arm-hisiv200-linux'
+Extract cross tools ...
+
+接着出现的错误
+Extract cross tools ...
+tar: arm-hisiv200-linux/target/armv7a_vfp_v3d16/usr/lib/libc.a: Wrote only 4608 of 10240 bytes
+tar: Skipping to next header
+tar: Archive contains obsolescent base-64 headers
+tar: arm-hisiv200-linux/target/armv7a_vfp_v3d16/usr/lib/libnsl_pic.a: Wrote only 3584 of 10240 bytes
+tar: Skipping to next header
+tar: arm-hisiv200-linux/target/armv7a_vfp_v3d16/usr/lib/libnss_files_pic.a: Wrote only 6144 of 10240 bytes
+tar: Skipping to next header
+tar: arm-hisiv200-linux/target/armv7a_vfp_v3d16/usr/lib/libdl_pic.a: Cannot write: No space left on device
+tar: Skipping to next header
+tar: arm-hisiv200-linux/target/armv7a_vfp_v3d16/usr/lib/libg.a: Cannot write: No space left on device
+tar: Skipping to next header
+tar: Error exit delayed from previous errors
+
+18:02 2015/4/26
+串口转USB驱动
+1. 最早是鼠标乱串 - win8
+2. 这次是，出现蓝屏， sr2pl64.sys 驱动问题。
+
+No space left on device的原因
+
+串口：115200 putty
+
+root 密码空
+
+ps 查看进程 kill 
+
+803 root      15:51 eCam
+797 root       0:18 /tmp/app/bin/watchdog
+
+PID   USER     TIME   COMMAND
+    1 root       0:02 init
+    2 root       0:00 [kthreadd]
+    3 root       0:00 [ksoftirqd/0]
+    4 root       0:01 [kworker/0:0]
+    5 root       0:00 [kworker/u:0]
+    6 root       0:09 [rcu_kthread]
+    7 root       0:00 [khelper]
+    8 root       0:00 [kworker/u:1]
+  128 root       0:00 [sync_supers]
+  130 root       0:00 [bdi-default]
+  131 root       0:00 [kintegrityd]
+  133 root       0:00 [kblockd]
+  145 root       0:00 [khubd]
+  158 root       0:00 [cfg80211]
+  159 root       0:00 [kworker/0:1]
+  241 root       0:00 [rpciod]
+  244 root       0:00 [kswapd0]
+  298 root       0:00 [fsnotify_mark]
+  303 root       0:00 [nfsiod]
+  314 root       0:00 [crypto]
+  390 root       0:00 [mtdblock0]
+  395 root       0:00 [mtdblock1]
+  400 root       0:00 [mtdblock2]
+  405 root       0:00 [mtdblock3]
+  410 root       0:00 [mtdblock4]
+  413 root       0:00 [romblock0]
+  416 root       0:00 [romblock1]
+  419 root       0:00 [romblock2]
+  422 root       0:00 [romblock3]
+  425 root       0:00 [romblock4]
+  451 root       0:00 [kpsmoused]
+  478 root       0:00 [mmcqd/0]
+  493 root       0:00 [jffs2_gcd_mtd2]
+  495 root       0:00 [jffs2_gcd_mtd3]
+  497 root       0:00 [jffs2_gcd_mtd4]
+  502 root       0:00 udevd --daemon
+  795 root       0:01 MsgServer
+  797 root       0:18 /tmp/app/bin/watchdog
+  803 root      15:51 eCam
+  830 root       0:02 lighttpd -f /usr/local/lighttpd-1.4.31-hi/config/lighttpd
+  831 root       0:13 /tmp/app/bin/cgi-bin/CGIInstance.fcgi
+ 2621 root       0:00 -sh
+ 2722 root       0:00 ps
+~ # [1970-01-03 22:18:46.562] [ERROR] UID:CBMTAJFPJSBB8G6MP7N1 login to P2P server fail, ret=-41, now retry...------../src/MediaServer/CMediaServer.cpp,2859
+[[1970-01-03 22:18:46.723]] ioctl(WDIOC_KEEPALIVE) error:No such file or directory------../CWatchdog.cpp,149
+[[1970-01-03 22:18:47.743]] ioctl(WDIOC_KEEPALIVE) error:No such file or directory------../CWatchdog.cpp,149
+[[1970-01-03 22:18:48.762]] ioctl(WDIOC_KEEPALIVE) error:No such file or directory------../CWatchdog.cpp,149
+[[1970-01-03 22:18:50.112]] ioctl(WDIOC_KEEPALIVE) error:No such file or directory------../CWatchdog.cpp,149
+[[1970-01-03 22:18:51.132]] ioctl(WDIOC_KEEPALIVE) error:No such file or directory------../CWatchdog.cpp,149
+[1970-01-03 22:18:51.682] [ERROR] UID:CBMTAJFPJSBB8G6MP7N1 login to P2P server fail, ret=-41, now retry...------../src/MediaServer/CMediaServer.cpp,2859
+[[1970-01-03 22:18:52.152]] ioctl(WDIOC_KEEPALIVE) error:No such file or directory------../CWatchdog.cpp,149
+
+无法通过串口进行上传下载文件。
+需要通过网络来传递文件，利用linux的 nts 功能
+
+目录列表：
+1. /home/evc/app/ TestApp-arm
+2. /sd 目录下 录制文件
+3. /tmp/app/bin/ eCam watchdog MsgServer lighttpd
+
+nfs 
+host 上共享一个文件夹
+ipc 上 mount 这个文件夹
+
+linux nfs 文件夹设置
+查看状态
+service portmap status
+service nfs status
+如果未启动，启动服务
+service nfs start
+查看编辑，配置文件
+/etc/exports ：最后一个选项：ro / rw / sync
+示例：/home/wangxiang 192.168.1.226(rw,sync,no_root_squash)
+重启，NFS，应用
+
+IPC 加载共享文件夹：
+mount 192.168.1.222:/mnt/share /mnt/share 失败出下面的错误
+mount: mounting 192.168.0.101:/home/share on /nfsroot failed: Permission denied
+mount 192.168.1.222:/home/wangxiang /mnt/share 成功
+
+比较两个文件夹的权限（chmod 777 -R /home/wangxiang） 及 指定用户
+drwx------ 22 wangxiang wangxiang 4096 Nov 21 03:34 wangxiang
+drwxrwxrwx 1 1100 110 4096 Dec 31 08:02 share
+
+9:58 2015/4/26 
+用PC机，虚拟 REDHAT ，共享文件夹，在，IPC上 mount 这个文件夹时，出错：
+/mnt # mount 192.168.0.101:/home/wangxiang /mnt/nfs
+svc: failed to register lockdv1 RPC service (errno 111).
+lockd_up: makesock failed, error=-111
+mount: mounting 192.168.0.101:/home/wangxiang on /mnt/nfs failed: Connection refused
+
+暂时用下面的方法解决，还不明白为什么 
+引用:
+mount -t nfs -o nolock 192.168.1.5:/home/armel /mnt
+
+
+rtsp 流：

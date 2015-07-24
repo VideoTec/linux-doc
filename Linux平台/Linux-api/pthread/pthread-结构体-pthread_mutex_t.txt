@@ -1,0 +1,8 @@
+mutex函数：
+
+pthread_mutex_init() 初始化互斥锁
+pthread_mutex_destroy() 删除互斥锁
+pthread_mutex_lock()：占有互斥锁（阻塞操作）
+pthread_mutex_trylock()：试图占有互斥锁（不阻塞操作）。即，当互斥锁空闲时，将占有该锁；否则，立即返回。
+pthread_mutex_unlock(): 释放互斥锁
+pthread_mutexattr_(): 互斥锁属性相关的函数

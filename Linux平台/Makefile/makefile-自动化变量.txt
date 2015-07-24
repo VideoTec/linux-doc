@@ -1,0 +1,36 @@
+Automatic[美][ˌɔtəˈmætɪk] variables
+
+preserve[英][prɪˈzɜ:v] [美][prɪˈzɜ:rv] vt.保护；保持，保存；腌制食物；防腐处理
+prerequisite[英][ˌpri:ˈrekwəzɪt] [美][priˈrɛkwɪzɪt] n.先决条件，前提，必要条件
+omit[英][əˈmɪt] [美][oˈmɪt] vt.省略；遗漏；删掉；未（做）
+
+$@	The name of the target.
+$%	The target member name, when the target is an archive member.
+$<	The name of the first (or only) prerequisite.
+$?	The names of all the prerequisites that are newer than the target, with spaces between them.
+
+$^
+$+	The names of all the prerequisites, with spaces between them. The value of $^ omits duplicate prerequisites, while $+ retains them and preserves their order.
+
+$*	The stem with which an implicit rule matches.
+
+$(@D)
+$(@F)	The directory part and the file-within-directory part of $@
+
+$(*D)
+$(*F)	The directory part and the file-within-directory part of $*
+
+$(%D)
+$(%F)	The directory part and the file-within-directory part of $%
+
+$(<D)
+$(<F)	The directory part and the file-within-directory part of $<
+
+$(^D)
+$(^F)	The directory part and the file-within-directory part of $^
+
+$(+D)
+$(+F)	The directory part and the file-within-directory part of $+
+
+$(?D)
+$(?F)	The directory part and the file-within-directory part of $?

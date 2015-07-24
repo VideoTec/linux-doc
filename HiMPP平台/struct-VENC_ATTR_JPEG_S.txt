@@ -1,0 +1,22 @@
+VENC_ATTR_S 中的 stAttrJpeg 字段
+
+typedef struct hiVENC_ATTR_JPEG_S 
+{
+    HI_U32  u32MaxPicWidth;      /*maximum width of a picture to be encoded, in pixel*/
+    HI_U32  u32MaxPicHeight;     /*maximum height of a picture to be encoded, in pixel*/
+    HI_U32  u32BufSize;          /*stream buffer size*/
+	取值范围：不小于图像宽高乘积的 1.5 倍  必须是 64 的整数倍
+
+    HI_BOOL bByFrame;            /*get stream mode is field mode  or frame mode*/
+	获取码流模式,帧或包    HI_TRUE：按帧获取   HI_FALSE：按包获取
+    
+    HI_BOOL bVIField;            /*the sign of the VI picture is field or frame*/
+	输入图像的帧场标志   HI_TRUE：场   HI_FALSE：帧
+
+    HI_U32  u32Priority;         /*channels precedence level*/
+	通道优先级。目前未使用，取值不限
+    
+    HI_U32  u32PicWidth;         /*width of a picture to be encoded, in pixel*/
+    HI_U32  u32PicHeight;        /*height of a picture to be encoded, in pixel*/
+    
+}VENC_ATTR_JPEG_S;

@@ -1,0 +1,128 @@
+libav/makefile 定义了许多目标,例如下面的目标：
+make libavutil/libavutil.a
+make libavutil/cpu-test.exe
+make install-libavutil-static
+make install-libavutil-headers
+make tools/aviocat.exe
+
+libav/makefile 最重要的循环 （把 library.mak common.make 等等串起来了）
+
+define DOSUBDIR
+$(foreach V,$(SUBDIR_VARS),$(eval $(call RESET,$(V))))
+SUBDIR := $(1)/                                            这里定义了子文件夹
+include $(SRC_PATH)/$(1)/Makefile                          把所有需要编译的源文件包含进来
+-include $(SRC_PATH)/$(1)/$(ARCH)/Makefile
+-include $(SRC_PATH)/$(1)/$(INTRINSICS)/Makefile
+include $(SRC_PATH)/library.mak                            这里调用common.mak
+endef
+
+$(foreach D,$(FFLIBS),$(eval $(call DOSUBDIR,lib$(D))))
+
+libav/makefile 编译选项的定义
+在common.mak里，把所有的对象文件名加上子目录名
+OBJS      := $(sort $(OBJS:%=$(SUBDIR)%)) 替换引用规则
+
+IFLAGS     := -I. -I$(SRC_PATH)
+CPPFLAGS   := $(IFLAGS) $(CPPFLAGS)
+CFLAGS     += $(ECFLAGS)
+CCFLAGS     = $(CPPFLAGS) $(CFLAGS)
+ASFLAGS    := $(CPPFLAGS) $(ASFLAGS)
+YASMFLAGS  += $(IFLAGS:%=%/) -Pconfig.asm
+HOSTCCFLAGS = $(IFLAGS) $(HOSTCPPFLAGS) $(HOSTCFLAGS)
+LDFLAGS    := $(ALLFFLIBS:%=$(LD_PATH)lib%) $(LDFLAGS)
+
+define COMPILE
+	$(call $(1)DEP,$(1))
+	$($(1)) $($(1)FLAGS) $($(1)_DEPFLAGS) $($(1)_C) $($(1)_O) $<
+endef
+
+COMPILE_C = $(call COMPILE,CC)
+COMPILE_S = $(call COMPILE,AS)
+COMPILE_HOSTC = $(call COMPILE,HOSTCC)
+
+%.o: %.c    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 定义了，所有.c -> .o转变的规则
+	$(COMPILE_C)
+
+libav/config.mak 定义了编译选项
+CC_DEPFLAGS=-MMD -MF $(@:.o=.d) -MT $@
+解释：
+MF 输出依赖文件名 *.d
+MT 输出的依赖文件中的目标 *.o
+
+CC=E:/android/ndk/toolchains/arm-linux-androideabi-4.8/prebuilt/windows-x86_64/bin/arm-linux-androideabi-gcc
+CC_C=-c
+CC_O=-o $@
+CCDEP=
+CCDEP_FLAGS=
+CPPFLAGS= --sysroot=E:/android/ndk/platforms/android-8/arch-arm -D_ISOC99_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -Dstrtod=avpriv_strtod -DPIC
+CFLAGS=   -march=armv5te -std=c99 -fomit-frame-pointer -fPIC -marm -pthread -g -Wdeclaration-after-statement -Wall -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wcast-qual -Wwrite-strings -Wtype-limits -Wundef -Wmissing-prototypes -Wstrict-prototypes -Wno-parentheses -Wno-switch -Wno-format-zero-length -Wno-pointer-sign -O3 -fno-math-errno -fno-signed-zeros -fno-tree-vectorize -Werror=implicit-function-declaration -Werror=missing-prototypes -Werror=return-type -Werror=declaration-after-statement -Werror=vla -Wno-maybe-uninitialized
+
+VC编译：
+CC=cl
+AS=cl
+LD=link
+DEPCC=cl
+DEPCCFLAGS=-nologo $(CPPFLAGS)
+DEPAS=cl
+DEPASFLAGS=-nologo $(CPPFLAGS)
+YASM=yasm
+DEPYASM=yasm
+AR=lib
+ARFLAGS=-nologo
+AR_O=-out:$@
+RANLIB=:
+STRIP=true
+LN_S=ln -s -f
+CPPFLAGS= -D_ISOC99_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_WIN32_WINNT=0x0502 -Dstrtod=avpriv_strtod -Dsnprintf=avpriv_snprintf -D_snprintf=avpriv_snprintf -Dvsnprintf=avpriv_vsnprintf
+CFLAGS= -nologo -D_USE_MATH_DEFINES -D_CRT_SECURE_NO_WARNINGS -Dinline=__inline -FIstdlib.h -Dstrtoll=_strtoi64    -W4 -wd4244 -wd4127 -wd4018 -wd4389 -wd4146 -wd4057 -wd4204 -wd4706 -wd4305 -wd4152 -wd4324 -we4013 -wd4100 -wd4214 -wd4273 -O2  
+ASFLAGS= -nologo -D_USE_MATH_DEFINES -D_CRT_SECURE_NO_WARNINGS -Dinline=__inline -FIstdlib.h -Dstrtoll=_strtoi64 
+AS_C=-c
+AS_O=-Fo$@
+CC_C=-c
+CC_E=-P -Fi$@
+CC_O=-Fo$@
+LD_O=-out:$@
+LD_LIB=lib%.a
+LD_PATH=-libpath:
+DLLTOOL=
+LDFLAGS= -nologo
+LDEXEFLAGS=
+SHFLAGS=-dll -def:$$(@:$(SLIBSUF)=.def) -implib:$(SUBDIR)$(SLIBNAME:$(SLIBSUF)=.lib)
+STRIPFLAGS=
+YASMFLAGS=-f win32  -DPREFIX
+BUILDSUF=
+FULLNAME=$(NAME)$(BUILDSUF)
+LIBPREF=lib
+LIBSUF=.a
+LIBNAME=$(LIBPREF)$(FULLNAME)$(LIBSUF)
+SLIBPREF=
+SLIBSUF=.dll
+EXESUF=.exe
+
+显示编译命令行 make V=1
+ifndef V
+Q      = @
+ECHO   = printf "$(1)\t%s\n" $(2)
+BRIEF  = CC HOSTCC HOSTLD AS YASM AR LD
+SILENT = DEPCC DEPHOSTCC DEPAS DEPYASM RANLIB RM STRIP
+MSG    = $@
+M      = @$(call ECHO,$(TAG),$@);
+$(foreach VAR,$(BRIEF), \
+    $(eval override $(VAR) = @$$(call ECHO,$(VAR),$$(MSG)); $($(VAR))))
+$(foreach VAR,$(SILENT),$(eval override $(VAR) = @$($(VAR))))
+$(eval INSTALL = @$(call ECHO,INSTALL,$$(^:$(SRC_PATH)/%=%)); $(INSTALL))
+endif
+
+SKIPHEADERS 什么作用？这两个单独的命令有什么作用？HOSTCC=cl HOSTLD=cl，
+单独的编译规则：COMPILE_HOSTC = $(call COMPILE,HOSTCC)
+ALLHEADERS := $(subst $(SRC_DIR)/,$(SUBDIR),$(wildcard $(SRC_DIR)/*.h $(SRC_DIR)/$(ARCH)/*.h))
+SKIPHEADERS += $(ARCH_HEADERS:%=$(ARCH)/%) $(SKIPHEADERS-)
+SKIPHEADERS := $(SKIPHEADERS:%=$(SUBDIR)%)
+HOBJS        = $(filter-out $(SKIPHEADERS:.h=.h.o),$(ALLHEADERS:.h=.h.o))
+checkheaders: $(HOBJS)
+.SECONDARY:   $(HOBJS:.o=.c)
+
+libav 安装头文件
+install-lib$(NAME)-headers: $(addprefix $(SUBDIR),$(HEADERS) $(BUILT_HEADERS))
+	$(Q)mkdir -p "$(INCINSTDIR)"
+	$$(INSTALL) -m 644 $$^ "$(INCINSTDIR)"

@@ -4,3 +4,7 @@ ifconfig en0 lladdr a0:b1:c2:d3:e4:f5
 关闭，开启网卡
 ifconfig eth0 up
 ifconfig eth0 down
+
+注意：
+ifconfig 后面必须跟设备名称才行。
+netcfg 命令会列出所有的设备

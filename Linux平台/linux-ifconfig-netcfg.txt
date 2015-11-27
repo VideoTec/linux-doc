@@ -1,0 +1,18 @@
+http://stackoverflow.com/questions/13169249/adb-command-for-getting-ip-address-assigned-by-operator
+
+Try this command, it will help you to get ipaddress
+
+$ adb shell ifconfig tiwlan0
+tiwlan0 is the name of the wi-fi network interface on the device. 
+This is generic command for getting ipaddress,
+
+ “adb shell netcfg”
+It will output like this
+
+usb0     DOWN  0.0.0.0         0.0.0.0         0×00001002
+sit0     DOWN  0.0.0.0         0.0.0.0         0×00000080
+ip6tnl0  DOWN  0.0.0.0         0.0.0.0         0×00000080
+gannet0  DOWN  0.0.0.0         0.0.0.0         0×00001082
+rmnet0   UP    112.79.87.220   255.0.0.0       0x000000c1
+rmnet1   DOWN  0.0.0.0         0.0.0.0         0×00000080
+rmnet2   DOWN  0.0.0.0         0.0.0.0         0×00000080

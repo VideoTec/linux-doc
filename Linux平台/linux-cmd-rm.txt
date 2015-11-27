@@ -1,3 +1,19 @@
+15:30 2015/11/25
+rm 文件夹 遇到的问题
+shell@shamu:/sdcard/Feinno $ rm Feinno
+rm: Feinno: is a directory
+1|shell@shamu:/sdcard/Feinno $ rm
+usage: rm [-f|-i] [-dPRrvWx] file ...
+1|shell@shamu:/sdcard/Feinno $ rm -d Feinno
+rm: Feinno: Directory not empty
+1|shell@shamu:/sdcard/Feinno $
+
+最后用：
+http://blog.csdn.net/t51558330501/article/details/3963369
+rm -rf 目录名字
+-r 就是向下递归，不管有多少级目录，一并删除
+-f 就是直接强行删除，不作任何提示的意思
+
 ---------------------
 参数 -rf 表示只删除存在的文件
 ---------------------

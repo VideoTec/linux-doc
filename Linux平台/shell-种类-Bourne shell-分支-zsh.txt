@@ -1,0 +1,19 @@
+Z shell (zsh)
+
+https://zh.wikipedia.org/wiki/Z_shell
+
+Z Shell(Zsh) 是一种Unix shell，
+它可以用作为交互式的登录shell，
+也是一种强大的shell脚本命令解释器。
+Zsh可以认为是一种Bourne shell的扩展，
+带有数量庞大的改进，
+包括一些bash、ksh、tcsh的功能。
+
+起源[编辑]
+Zsh的最初版本是在1990年由Paul Falstad写成，
+当时他是普林斯顿大学的学生。
+他以普林斯顿大学助理教授邵中(Zhong Shao)的名字来命名zsh。
+
+zsh的手册里非常有名的第一句
+“鉴于zsh有许多功能，手册被分为数个章节”，
+总计有17章节，可见其手册的长度

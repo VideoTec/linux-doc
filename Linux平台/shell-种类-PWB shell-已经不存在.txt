@@ -1,0 +1,3 @@
+PWB shell (sh) Thompson shell 的一个版本，
+由John Mashey和他人在贝尔实验室时改进。
+1976年随PWB UNIX发布。

@@ -1,0 +1,49 @@
+https://zh.wikipedia.org/wiki/Bash
+输入输出重定向
+
+bash拥有传统Bourne shell缺乏的I/O重定向语法。
+bash可以同时重定向标准输出和标准错误，这需要使用下面的语法：
+
+ command &> file
+ 
+这比等价的Bourne shell语法"command > file 2>&1"来的简单。
+2.05b版本以后，bash可以用下列语法重定向标准输入至字符串（称为here string）：
+
+ command <<< "string to be read as standard input"
+ 
+如果字符串包括空格就需要用引号包裹字符串。
+
+例子: 
+
+重定向标准输出至文件，写数据，关闭文件，重置标准输出。
+
+ # 生成标准输出（文件描述符1）的拷贝文件描述符6
+ exec 6>&1
+ # 打开文件"test.data"以供写入
+ exec 1>test.data
+ # 产生一些内容
+ echo "data:data:data"
+ # 关闭文件"test.data"
+ exec 1>&-
+ # 使标准输出指向FD 6（重置标准输出）
+ exec 1>&6
+ # 关闭FD6
+ exec 6>&-
+ 
+打开及关闭文件
+
+ # 打开文件test.data以供读取
+ exec 6<test.data
+ # 读文件直到文件尾
+ while read -u 6 dta
+ do
+   echo "$dta" 
+ done
+ # 关闭文件test.data
+ exec 6<&-
+ 
+抓取外部命令的输出
+
+  # 运行'find'并且将结果存于VAR
+  # 搜索以"h"结尾的文件名
+  VAR=$(find . -name "*h")

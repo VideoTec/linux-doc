@@ -1,0 +1,24 @@
+http://tiswww.case.edu/php/chet/bash/bashtop.html
+
+Bash is the GNU Project's Bourne Again SHell, 
+a complete implementation of 
+the IEEE POSIX and Open Group shell specification with 
+1）interactive command line editing, 
+2）job control on architectures that support it,
+ 
+csh-like features such as 
+1）history substitution and brace 
+2）expansion, and 
+3）a slew of other features. 
+
+Here is a short list of some of the features available in bash.
+
+For more information on the features of Bash 
+that are new to this type of shell, see the reference manual. 
+There is also a large Unix-style man page. 
+The man page is the definitive description of the shell's features.
+
+Bash is free software, 
+distributed under the terms of the GNU General Public License, version 3.
+
+A number of frequently-asked questions are answered in the FAQ.

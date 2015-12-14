@@ -1,0 +1,15 @@
+Debian Almquist shell(dash)
+
+https://zh.wikipedia.org/wiki/Debian_Almquist_shell
+
+Debian Almquist shell，缩写为dash，
+一种 Unix shell，兼容于POSIX标准。
+它比 Bash 小，只需要较少的磁盘空间，
+但是它的对话性功能也较少。
+
+它由 NetBSD版本的Almquist shell (ash)发展而来，于
+1997年，由赫伯特·许（Herbert Xu）移植到Linux上，于
+2002年改名为 dash。
+
+Dash，就像 ash，
+它运行 shell scripts 的速度比bash快，需要的软件库也较少。

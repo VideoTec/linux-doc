@@ -1,0 +1,21 @@
+https://zh.wikipedia.org/wiki/Bash
+
+bash的命令语法是Bourne shell命令语法的超集。
+数量庞大的Bourne shell脚本大多不经修改即可以在bash中执行，
+只有那些引用了Bourne特殊变量或使用了Bourne的内置命令的脚本才需要修改。
+
+bash的命令语法很多来自
+Korn shell（ksh）和
+C shell（csh），
+例如
+1）命令行编辑，
+2）命令历史，
+3）目录栈，
+4）$RANDOM和$PPID变量，以及
+5）POSIX的命令置换语法：$(...)。
+
+作为一个交互式的shell，
+按下TAB键即可自动补全已部分输入的程序名，文件名，变量名等等。
+
+bash的语法针对Bourne shell的不足做了很多扩展。
+其中的一些列举在这里。

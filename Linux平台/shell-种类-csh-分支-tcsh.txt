@@ -1,0 +1,9 @@
+TENEX C shell (tcsh)
+
+https://zh.wikipedia.org/wiki/Tcsh
+
+tcsh 
+发音为/tiːˈsiːʃɛl/ tee-see-shel, /ˈtiːʃɛl/ tee-shel, 
+是一个向下兼容c shell的Unix shell。
+它本质上是为c shell增加命令补完，命令编辑等其他功能。 
+目前作为FreeBSD和其延伸发行版的默认shell。

@@ -1,0 +1,14 @@
+Almquist shell (ash)
+
+https://zh.wikipedia.org/wiki/Almquist_shell
+
+Almquist shell，经常被简称为 A Shell 或 ash，
+一种Unix shell，
+源自于Bourne shell，
+由肯尼斯·艾昆斯特（Kenneth Almquist）在SVR4上建立了这个分支。
+它的特色是快而且轻巧，
+兼容于POSIX，在后来的BSD版本上，它取代了Bourne shell。
+
+在FreeBSD、NetBSD、DragonFly BSD、Minix上，
+预设安装的shell(/bin/sh) ，都是衍生自 ash。
+在Linux上，发展出了 Debian Almquist shell。

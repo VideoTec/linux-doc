@@ -1,0 +1,68 @@
+http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_02_01.html
+
+The script should have execute permissions for 
+the correct owners in order to be runnable. 
+
+---------------------------------------
+像普通命令一样运行：
+---------------------------------------
+When setting permissions, 
+check that you really obtained the permissions that you want. 
+When this is done, 
+the script can run like any other command:
+
+This is the most common way to execute a script. 
+It is preferred to execute the script like this in a subshell. 
+The variables, functions and aliases created in this subshell 
+are only known to the particular bash session of that subshell. 
+When that shell exits and the parent regains control, 
+everything is cleaned up and 
+all changes to the state of the shell made by the script, are forgotten.
+
+---------------------------------------
+在 shell 中执行脚本
+The script does not need execute permission in this case.
+---------------------------------------
+If you did not put the scripts directory in your PATH, 
+and . (the current directory) is not in the PATH either, 
+you can activate the script like this:
+
+./script_name.sh
+
+A script can also explicitly be executed by a given shell, 
+but generally we only do this if we want to obtain special behavior, 
+such as checking if the script works with another shell or printing traces for debugging:
+
+rbash script_name.sh
+sh script_name.sh
+bash -x script_name.sh
+
+The specified shell will start as a subshell of your current shell and execute the script. 
+This is done when you want the script to start up with specific options or 
+under specific conditions which are not specified in the script.
+
+If you don't want to start a new shell 
+but execute the script in the current shell, you source it:
+
+source script_name.sh
+The script does not need execute permission in this case. 
+Commands are executed in the current shell context, 
+so any changes made to your environment will be visible when the script finishes execution:
+
+synonym[英][ˈsɪnənɪm] [美][ˈsɪnəˌnɪm]
+同义词
+
+最重根据一个信息：
+source = .
+The Bash source built-in is a synonym for the Bourne shell . (dot) command.
+http://askubuntu.com/questions/232932/in-a-bash-script-what-does-a-dot-followed-by-a-space-and-then-a-path-mean
+Just a note: . will work in most shells (sh, ash, ksh, etc), source is specific for bash
+
+例子：
+willy:~/scripts> source script1.sh  --  
+--output ommitted--
+
+willy:~/scripts> echo $VALUE
+9
+
+willy:~/scripts>

@@ -1,0 +1,8 @@
+Korn shell (ksh) David Korn在贝尔实验室时编写
+
+https://zh.wikipedia.org/wiki/Korn_shell
+
+Korn shell (ksh) 是一个 Unix shell 。
+它由贝尔实验室的David Korn在二十世纪八十年代早期编写。
+它完全向上兼容 Bourne shell 并包含了 C shell 的很多特性，
+例如贝尔实验室用户需要的命令编辑。

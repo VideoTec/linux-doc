@@ -1,0 +1,3 @@
+bashdb，带有调试器的Bash
+
+http://bashdb.sourceforge.net/

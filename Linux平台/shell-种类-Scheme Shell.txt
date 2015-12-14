@@ -1,0 +1,24 @@
+scsh (Scheme Shell)
+
+http://scsh.net/
+
+Scsh is an open-source Unix shell embedded within Scheme, 
+running on all major Unix platforms including 
+1）AIX, 
+2）Cygwin, 
+3）Linux, 
+4）FreeBSD, 
+5）GNU Hurd, 
+6）HP-UX, I
+7）rix, 
+8）Mac OS X, 
+9）Solaris, and some others.
+
+Scheme是一种多范型的编程语言，
+并主要支持函数式范型。
+
+它是Lisp两种主要的方言之一。
+与Common Lisp不同的是，
+Scheme强调极简主义设计与简约而可扩展的语言特性。
+它的精简性与优雅的语法广受计算机科学教育者以及语言设计学者的欢迎，
+并经常被用于基础计算机科学教育上

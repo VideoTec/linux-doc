@@ -1,0 +1,23 @@
+https://zh.wikipedia.org/wiki/Bash
+
+bash 3.0支持进程内的正则表达式，使用下面的语法：
+
+ [[ string =~ regex ]]
+ 
+正则表达式语法同regex(7) man page所描述的一致。
+正则表达式匹配字符串时上述命令的退出状态为0，不匹配为1。
+正则表达式中用圆括号括起的子表达式可以访问shell变量BASH_REMATCH，如下：
+
+ if [[ abcfoobarbletch =~ 'foo(bar)bl(.*)' ]]
+ then
+         echo The regex matches!
+         echo $BASH_REMATCH      -- outputs: foobarbletch
+         echo ${BASH_REMATCH[1]} -- outputs: bar
+         echo ${BASH_REMATCH[2]} -- outputs: etch
+ fi
+
+使用这个语法的性能要比生成一个新的进程来运行grep命令优越，
+因为正则表达式匹配在bash进程内完成。
+如果正则表达式或者字符串包括空格或者shell 关键字，（诸如'*'或者'?'），
+就需要用引号包裹。
+Bash 4 开始的版本已经不需要这么做了。

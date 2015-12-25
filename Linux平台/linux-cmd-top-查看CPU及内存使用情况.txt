@@ -1,0 +1,88 @@
+
+15 Linux查看CPU和内存使用情况
+top -u oracle
+运行 top 命令后，CPU 使用状态会以全屏的方式显示，并且会处在对话的模式 -- 用基于 top 的命令，可以控制显示方式等等。退出 top 的命令为 q （在 top 运行中敲 q 键一次
+  PID  PPID USER     STAT   VSZ %VSZ CPU %CPU COMMAND
+ 1263  1078 root     R     1344  1.4   0  0.4 top
+  832     1 root     S     3456  3.6   0  0.0 lighttpd -f /usr/local/lighttpd-1.
+  833   832 root     S     3284  3.4   0  0.0 {CGIInstance.fcg} /tmp/app/bin/cgi
+ 1078     1 root     S     1356  1.4   0  0.0 -sh
+  869     1 root     S     1344  1.4   0  0.0 udhcpc -q -ieth0
+    1     0 root     S     1340  1.4   0  0.0 init
+  502     1 root     S <    872  0.9   0  0.0 udevd --daemon
+    6     2 root     SW       0  0.0   0  0.0 [rcu_kthread]
+  159     2 root     SW       0  0.0   0  0.0 [kworker/0:1]
+  495     2 root     SWN      0  0.0   0  0.0 [jffs2_gcd_mtd3]
+  493     2 root     SWN      0  0.0   0  0.0 [jffs2_gcd_mtd2]
+    5     2 root     SW       0  0.0   0  0.0 [kworker/u:0]
+    4     2 root     SW       0  0.0   0  0.0 [kworker/0:0]
+  478     2 root     SW       0  0.0   0  0.0 [mmcqd/0]
+  128     2 root     SW       0  0.0   0  0.0 [sync_supers]
+  497     2 root     SWN      0  0.0   0  0.0 [jffs2_gcd_mtd4]
+  145     2 root     SW       0  0.0   0  0.0 [khubd]
+  241     2 root     SW<      0  0.0   0  0.0 [rpciod]
+  244     2 root     SW       0  0.0   0  0.0 [kswapd0]
+
+  free -m    linux查看内存的大小
+             total         used         free       shared      buffers
+Mem:            92           41           51            0            0
+-/+ buffers:                 40           52
+Swap:            0            0            0
+
+cat /proc/meminfo  查看内存信息
+MemTotal:          94476 kB
+MemFree:           52432 kB
+Buffers:             964 kB
+Cached:            26424 kB
+SwapCached:            0 kB
+Active:             9172 kB
+Inactive:          19148 kB
+Active(anon):       3008 kB
+Inactive(anon):     9184 kB
+Active(file):       6164 kB
+Inactive(file):     9964 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:                 0 kB
+Writeback:             0 kB
+AnonPages:           956 kB
+Mapped:             1500 kB
+Shmem:             11260 kB
+Slab:               7600 kB
+SReclaimable:       1272 kB
+SUnreclaim:         6328 kB
+KernelStack:         328 kB
+PageTables:          128 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:       47236 kB
+Committed_AS:      13308 kB
+VmallocTotal:     909312 kB
+VmallocUsed:        3544 kB
+VmallocChunk:     900744 kB
+关于/proc/meminfo中各行的含意, 在内核源代码的Documentation/filesystems/proc.txt
+
+系统的真实内存大小可以用dmesg 　grep [mM][eE][mM]看到
+Linux version 3.0.8 (foscam@ubuntu) (gcc version 4.4.1 (Hisilicon_v100(gcc4.4-290+uclibc_0.9.32.1+eabi+linuxpthread)) ) #3 Wed Jul 23 06:57:29 CST 2014
+CPU: ARM926EJ-S [41069265] revision 5 (ARMv5TEJ), cr=00053177
+CPU: VIVT data cache, VIVT instruction cache
+Machine: hi3518
+Memory policy: ECC disabled, Data cache writeback
+AXI bus clock 200000000.
+
+Memory: 98MB = 98MB total
+Memory: 92804k/92804k available, 7548k reserved, 0K highmem
+Virtual kernel memory layout:
+    vector  : 0xffff0000 - 0xffff1000   (   4 kB)
+    fixmap  : 0xfff00000 - 0xfffe0000   ( 896 kB)
+    DMA     : 0xffc00000 - 0xffe00000   (   2 MB)
+    vmalloc : 0xc6800000 - 0xfe000000   ( 888 MB)
+    lowmem  : 0xc0000000 - 0xc6200000   (  98 MB)
+    modules : 0xbf000000 - 0xc0000000   (  16 MB)
+      .init : 0xc0008000 - 0xc01aa000   (1672 kB)
+      .text : 0xc01aa000 - 0xc0643000   (4708 kB)
+      .data : 0xc0644000 - 0xc0661720   ( 118 kB)
+       .bss : 0xc0661744 - 0xc06745b0   (  76 kB)

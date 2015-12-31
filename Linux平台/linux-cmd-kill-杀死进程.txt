@@ -1,0 +1,7 @@
+http://www.developerphil.com/dont-store-data-in-the-application-object/
+
+adb shell ps | grep your.app.package
+# USER      PID   PPID  VSIZE  RSS     WCHAN    PC         NAME
+# u0_a198   21997 160   827940 22064 ffffffff 00000000 S your.app.package
+
+adb shell kill -9 21997

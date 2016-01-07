@@ -1,0 +1,3 @@
+http://www.cnblogs.com/xmphoenix/archive/2011/10/23/2221879.html
+
+ELF(Executable and Linking Format)是一种对象文件的格式，用于定义不同类型的对象文件(Object files)中都放了什么东西、以及都以什么样的格式去放这些东西。它自最早在 System V 系统上出现后，被 xNIX 世界所广泛接受，作为缺省的二进制文件格式来使用。可以说，ELF是构成众多xNIX系统的基础之一，所以作为嵌入式Linux系统乃至内核驱动程序开发人员，你最好熟悉并掌握它

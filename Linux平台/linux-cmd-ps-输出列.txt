@@ -1,0 +1,12 @@
+1|shell@m0cmcc:/ $ ps | more
+USER     PID   PPID  VSIZE  RSS     WCHAN    PC         NAME
+root      1     0     528    352   ffffffff 00000000 S /init
+root      2     0     0      0     ffffffff 00000000 S kthreadd
+root      3     2     0      0     ffffffff 00000000 S ksoftirqd/0
+root      6     2     0      0     ffffffff 00000000 S migration/0
+root      7     2     0      0     ffffffff 00000000 S watchdog/0
+root      20    2     0      0     ffffffff 00000000 S khelper
+root      24    2     0      0     ffffffff 00000000 S netns
+root      28    2     0      0     ffffffff 00000000 S sync_system_wor
+root      444   2     0      0     ffffffff 00000000 S sync_supers
+root      446   2     0      0     ffffffff 00000000 S bdi-default

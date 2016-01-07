@@ -1,0 +1,19 @@
+https://zh.wikipedia.org/wiki/Grep
+
+grep是一个最初用于Unix操作系统的命令行工具。
+在给出文件列表或标准输入后，
+grep会对匹配一个或多个正则表达式的文本进行搜索，
+并只输出匹配（或者不匹配）的行或文本。
+
+grep这个应用程序最早由肯·汤普逊写成。
+grep原先是ed下的一个应用程序，
+名称来自于g/re/p
+（globally search a regular expression and print，
+以正规表示法进行全域查找以及打印）。
+在ed下，输入g/re/p这个命令后，会将所有符合先定义样式的字符串，
+以行为单位打印出来。
+
+注释：
+肯尼斯·蓝·汤普逊（英语：Kenneth Lane Thompson，1943年2月4日－），小名为肯·汤普逊（英语：Ken Thompson），生于美国新奥尔良，计算机科学学者与软件工程师。他与丹尼斯·里奇设计了B语言、C语言，创建了Unix和Plan 9操作系统，他也是编程语言Go的共同作者。与丹尼斯·里奇同为1983年图灵奖得主
+
+在1973年，Unix第四版中，grep首次出现在man页面中

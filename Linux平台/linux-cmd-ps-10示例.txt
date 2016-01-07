@@ -1,0 +1,7 @@
+http://www.binarytides.com/linux-ps-command/
+
+Linux ps command
+
+The ps command on linux is one of the most basic commands for viewing the processes running on the system. It provides a snapshot of the current processes along with detailed information like user id, cpu usage, memory usage, command name etc. It does not display data in real time like top or htop commands. But even though being simpler in features and output it is still an essential process management/monitoring tool that every linux newbie should know about and learn well.
+ 
+In this post we are going to revise the basics of using the ps command to check the processes and filter and sort them in different ways to suit better.

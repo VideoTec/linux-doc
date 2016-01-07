@@ -1,0 +1,11 @@
+https://zh.wikipedia.org/wiki/%E5%8F%AF%E5%9F%B7%E8%A1%8C%E8%88%87%E5%8F%AF%E9%8F%88%E6%8E%A5%E6%A0%BC%E5%BC%8F
+
+可执行和可链接格式 （英语：Executable and Linkable Format，缩写为ELF），
+常被称为ELF格式，
+在计算机科学中，是一种用于执行档、目的档、共享库和核心转储的标准文件格式。
+
+1999年，被86open项目选为x86架构上的
+类Unix操作系统的二进制文件格式标准，用来取代COFF。
+
+因其可扩展性与灵活性，
+也可应用在其它处理器、计算机系统架构的操作系统上

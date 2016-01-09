@@ -1,0 +1,11 @@
+http://blog.csdn.net/nanatintin/article/details/8535445
+
+#rpm -qa |grep ssh 检查是否装了SSH包
+
+没有的话yum install openssh-server
+#chkconfig --list sshd 检查SSHD是否在本运行级别下设置为开机启动
+#chkconfig --level 2345 sshd on  如果没设置启动就设置下.
+#service sshd restart  重新启动
+#netstat -antp |grep sshd  看是否启动了22端口.确认下.
+#iptables -nL  看看是否放行了22口.
+#setup---->防火墙设置   如果没放行就设置放行.

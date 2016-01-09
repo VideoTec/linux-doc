@@ -1,0 +1,61 @@
+hdiutil convert -format UDRW -o *.img *.iso
+
+https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/hdiutil.1.html
+
+hdiutil -- manipulate disk images (attach, verify, burn, etc)
+
+hdiutil uses the DiskImages framework to manipulate disk images.  Common verbs include attach, detach,
+     verify, create, convert, compact, and burn.
+
+     The rest of the verbs are currently: help, info, checksum, chpass, erasekeys, unflatten, flatten,
+     imageinfo, isencrypted, mountvol, unmount, plugins, udifrez, udifderez, internet-enable, resize,
+     segment, makehybrid, and pmap.
+
+convert image -format format -o outfile
+                convert image to type format and write the result to outfile.
+
+                As with create, the correct filename extension will be added only if it isn't part of the
+                provided name.  Format is one of:
+
+                      UDRW - UDIF read/write image
+                      UDRO - UDIF read-only image
+                      UDCO - UDIF ADC-compressed image
+                      UDZO - UDIF zlib-compressed image
+                      UDBZ - UDIF bzip2-compressed image (OS X 10.4+ only)
+                      UFBI - UDIF entire image with MD5 checksum
+                      UDRo - UDIF read-only (obsolete format)
+                      UDCo - UDIF compressed (obsolete format)
+                      UDTO - DVD/CD-R master for export
+                      UDxx - UDIF stub image
+                      UDSP - SPARSE (grows with content)
+                      UDSB - SPARSEBUNDLE (grows with content; bundle-backed)
+                      RdWr - NDIF read/write image (deprecated)
+                      Rdxx - NDIF read-only image (Disk Copy 6.3.3 format)
+                      ROCo - NDIF compressed image (deprecated)
+                      Rken - NDIF compressed (obsolete format)
+                      DC42 - Disk Copy 4.2 image
+
+                In addition to the compression offered by some formats, the UDIF and NDIF read-only formats
+                skip unused space in HFS, UFS, and MS-DOS (FAT) filesystems.  For UDZO, -imagekey
+                zlib-level=value allows the zlib compression level to be specified ala gzip(1).  The default
+                compression level is 1 (fastest).
+
+                Common options: -encryption, -stdinpass, -certificate, -srcimagekey, -tgtimagekey, -shadow
+                and related, -puppetstrings, and -plist.
+
+                Other options:
+                -align alignment
+                             The default is 4 (2K).
+                -pmap        add partition map.
+                             When converting a NDIF to a any variety of UDIF, or when converting an unparti-tioned unpartitioned
+                             tioned UDIF, the default is true.
+                -segmentSize [size_spec]
+                             Specify segmentation into size_spec-sized segments as outfile is being written.
+                             The default size_spec when -segmentSize is specified alone is 2*1024*1024 (1 GB
+                             worth of sectors) for UDTO images and 4*1024*1024 (2 GB segments) for all other
+                             image types.  size_spec can also be specified ??b|??k|??m|??g|??t??p|??e like
+                             create's -size flag.
+                -tasks task_count
+                             When converting an image into a compressed format, specify the number of
+                             threads to use for the compression operation.  The default is the number of
+                             processors active in the current system.

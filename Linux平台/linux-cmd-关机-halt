@@ -1,0 +1,10 @@
+http://blogger.gtwang.org/2013/10/how-to-shutdown-linux.html
+
+halt 其實跟 shutdown 沒多大分別，只不過 shutdown 在關機時會把系統的服務都關閉之後，才關閉電腦，而 halt 指令則允許不管系統的狀態為何，直接停止電腦的運作，例如：
+
+halt -f
+
+poweroff 指令也是類似的狀況，它也允許你不管系統的狀況，直接把電腦的電源切斷，例如：
+poweroff -f
+
+雖然系統有提供這樣的功能，但是其實這些功能在一般的狀況根本用不到，除非是系統真的當機，不然使用 shutdown 來關機會比較安全

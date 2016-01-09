@@ -1,0 +1,24 @@
+镜像：
+http://mirrors.aliyun.com/centos/
+
+方法一：
+http://mirrors.aliyun.com/centos/6.7/isos/i386/CentOS-6.7-i386-bin-DVD1.iso
+下载，制作USB安装盘，安装失败：
+提示 loader exited unexpectedly  backtrace ........the system will be rebooted when you press ctrl c or  ctrl+alt+del
+
+方法二：
+使用 URL 安装：地址写
+http://mirrors.aliyun.com/centos/6.7/os/i386/
+可以正确安装
+
+注意：
+1） centos 7 以后，官方不在提供 32 位版本了
+2） 方法一安装失败，是不是由于下载的镜像不完整，或者制作的镜像不完整造成的呢？
+
+安装步骤：
+1）选择硬盘
+2）host-name wxcentos
+3) Root PSW cary
+安装完后重启，设置用户名
+wx / wangxiang 公司邮箱
+设置是否要求网络认证登录，NIS

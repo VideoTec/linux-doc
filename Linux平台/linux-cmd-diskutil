@@ -1,0 +1,33 @@
+https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man8/diskutil.8.html
+
+diskutil -- modify, verify and repair local disks
+
+diskutil [quiet] verb [options]
+
+diskutil manipulates the structure of local disks.  It provides information about, and allows the
+     administration of, the partitioning schemes, layouts, and formats of disks. This includes hard disks,
+     solid state disks, optical discs, CoreStorage volumes, and AppleRAID sets.  It generally manipulates
+     whole volumes instead of individual files and directories.
+
+mountDisk device
+                Mount an entire disk (all mountable volumes).  You should specify a whole disk, but all vol-umes volumes
+                umes of the whole disk are attempted to be mounted even if you specify a partition.
+
+list [-plist] [device]
+                List disks.  If no argument is given, then all disks and all of their partitions are listed.
+
+                If -plist is specified, then a property list will be emitted instead of the normal user-readable userreadable
+                readable output.  If a device is specified, then instead of listing all families of whole
+                disks and their partitions, only one such family is listed.  In that case, specifying either
+                the whole disk or any of its slices will work.
+
+                A script could interpret the results of the diskutil list -plist output and use diskutil
+                info -plist as well as diskutil listFilesystems -plist for more detailed information.
+
+                See the DEVICES section below for the various forms that the device specification may take
+                for this and all of the other diskutil verbs.
+
+                The top-to-bottom appearance of partitions in diskutil list always indicates the on-disk
+                ordering.  BSD disk identifiers may, in certain circumstances, not appear in slice-numerical
+                order when viewed this way.  This is normal and is likely the result of a recent partition
+                map editing operation in which volumes were kept mounted.

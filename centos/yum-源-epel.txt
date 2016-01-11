@@ -1,0 +1,32 @@
+https://linux.cn/article-2324-1.html
+
+EPEL (Extra Packages for Enterprise Linux，企业版Linux的额外软件包) 
+是Fedora小组维护的一个软件仓库项目，
+为RHEL/CentOS提供他们默认不提供的软件包。
+这个源兼容RHEL及像CentOS和Scientific Linux这样的衍生版本
+
+我们可以很容易地通过yum命令从EPEL源上获取上万个在CentOS自带源上没有的软件。
+EPEL提供的软件包大多基于其对应的Fedora软件包，不会与企业版Linux发行版本的软件发生冲突或替换其文件。
+
+如果系统添加了多个第三方源，可能会因此产生冲突——一个软件包可以从多个源获取，
+一些源会替换系统的基础软件包，从而可能会产生意想不到的错误。
+对于这些问题我们建议，调整源的优先权或者有选择性的安装源，
+但是这需要复杂的操作，如果你不确定如何操作，我们推荐你只安装一个第三方源
+
+EPEL源 是什么？ 需要解释，什么是 yum 源。
+1）是一个安装包 *.rpm
+2）需要下载安装：
+wget http://mirrors.yun-idc.com/epel/5/i386/epel-release-5-4.noarch.rpm
+pm -ivh epel-release-5-4.noarch.rpm    安装EPEL源（注：我这里是64位系统）
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-5  导入key文件
+
+查看安装的EPEL源
+cd /etc/yum.repos.d/
+ll
+但是默认情况下，只有正式版是有效状态的，如果你想试试测试版的话，
+需要修改/etc/yum.repos.d/epel-testing.repo，
+把enabled=0改成enabled=1即可
+
+测试
+yum clean all
+yum list

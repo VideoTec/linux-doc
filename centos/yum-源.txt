@@ -1,0 +1,143 @@
+http://www.cnblogs.com/mchina/archive/2013/01/04/2842275.html
+
+yum，是Yellow dog Updater, Modified 的简称，是杜克大学为了提高RPM 软件包安装性而开发的一种软件包管理器。
+起初是由yellow dog 这一发行版的开发者Terra Soft 研发，用python 写成，
+那时还叫做yup(yellow dog updater)，后经杜克大学的Linux@Duke 开发团队进行改进，遂有此名。
+yum 的宗旨是自动化地升级，安装/移除rpm 包，收集rpm 包的相关信息，检查依赖性并自动提示用户解决。
+yum 的关键之处是要有可靠的repository，顾名思义，这是软件的仓库，
+它可以是http 或ftp 站点，也可以是本地软件池，
+但必须包含rpm 的header，header 包括了rpm 包的各种信息，包括描述，功能，提供的文件，依赖性等。
+正是收集了这些header 并加以分析，才能自动化地完成余下的任务。
+
+　　yum 的理念是使用一个中心仓库(repository)管理一部分甚至一个distribution 的应用程序相互关系，
+根据计算出来的软件依赖关系进行相关的升级、安装、删除等等操作，
+减少了Linux 用户一直头痛的dependencies 的问题。这一点上，yum 和apt 相同。
+apt 原为debian 的deb 类型软件管理所使用，但是现在也能用到RedHat 门下的rpm 了。
+
+　　yum 主要功能是更方便的添加/删除/更新RPM 包，
+自动解决包的倚赖性问题，便于管理大量系统的更新问题。
+
+　　yum 可以同时配置多个资源库(Repository)，
+简洁的配置文件（/etc/yum.conf），
+自动解决增加或删除rpm 包时遇到的依赖性问题，保持与RPM 数据库的一致性。
+
+——————————————————————————
+CentOS 默认已经安装了yum
+——————————————————————————
+yum 的基础安装包包括：
+yum　　//RPM installer/updater
+yum-fastestmirror　　//Yum plugin which chooses fastest repository from a mirrorlist
+yum-metadata-parser　　//A fast metadata parser for yum
+
+yum 常用命令
+yum -v          -v, --verbose         verbose operation
+yum version     Display a version for the machine and/or available repos.
+yum help        显示用法信息
+
+yum repolist    显示已配置的仓库
+已加载插件：fastestmirror, refresh-packagekit, security
+Loading mirror speeds from cached hostfile
+ * base: centos.ustc.edu.cn
+ * extras: centos.ustc.edu.cn
+ * updates: centos.ustc.edu.cn
+仓库标识              仓库名称                        状态
+base                 CentOS-6 - Base               4,968
+extras               entOS-6 - Extras              40
+updates              CentOS-6 - Updates            820
+repolist: 5,828
+
+/etc/yum.repos.d 
+repository 部分定义了每个源/服务器的具体配置，可以有一到多个。
+常位于/etc/yum.repo.d 目录下的各文件中
+查看刚安装的系统的这个目录：
+-rw-r--r--. 1 root root 1991 8月   4 00:12 CentOS-Base.repo
+-rw-r--r--. 1 root root  647 8月   4 00:12 CentOS-Debuginfo.repo
+-rw-r--r--. 1 root root  289 8月   4 00:12 CentOS-fasttrack.repo
+-rw-r--r--. 1 root root  630 8月   4 00:12 CentOS-Media.repo
+-rw-r--r--. 1 root root 6259 8月   4 00:12 CentOS-Vault.repo
+
+yum.conf 文件一般位于/etc目录下，一般其中只包含main部分的配置选项
+
+——————————————————————————
+所有repository 服务器设置都应该遵循如下格式：
+——————————————————————————
+[serverid]
+name=Some name for this server
+baseurl=url://path/to/repository/
+serverid 是用于区别各个不同的repository，必须有一个独一无二的名称；
+name 是对repository 的描述，支持像$releasever $basearch这样的变量；
+baseurl 是服务器设置中最重要的部分，只有设置正确，才能从上面获取软件
+
+baseurl 的格式：
+baseurl=url://server1/path/to/repository/
+　　　　 url://server2/path/to/repository/
+　　　　 url://server3/path/to/repository/
+其中url 支持的协议有 http:// ftp:// file:// 三种。
+baseurl 后可以跟多个url，你可以自己改为速度比较快的镜像站，但baseurl 只能有一个
+
+其中url 指向的目录必须是这个repository header 目录的上一级，
+它也支持$releasever $basearch 这样的变量。
+url 之后可以加上多个选项，如gpgcheck、exclude、failovermethod 等，比如：
+
+[updates-released]
+name=Fedora Core $releasever - $basearch - Released Updates
+baseurl=http://download.atrpms.net/mirrors/fedoracore/updates/$releasever/$basearch
+　　　　 http://redhat.linux.ee/pub/fedora/linux/core/updates/$releasever/$basearch
+　　　　 http://fr2.rpmfind.net/linux/fedora/core/updates/$releasever/$basearch
+gpgcheck=1
+exclude=gaim
+failovermethod=priority
+
+其中gpgcheck，exclude 的含义和[main] 部分相同，但只对此服务器起作用，
+failovermethode 有两个选项roundrobin 和priority，
+意思分别是有多个url可供选择时，yum 选择的次序，
+roundrobin 是随机选择，如果连接失败则使用下一个，依次循环，
+priority 则根据url 的次序从第一个开始。
+如果不指明，默认是roundrobin。
+
+关于变量
+$releasever：代表发行版的版本，从[main]部分的distroverpkg获取，如果没有，则根据redhat-release包进行判断。
+$arch：cpu体系，如i686,athlon等
+$basearch：cpu的基本体系组，如i686和athlon同属i386，alpha和alphaev6同属alpha。
+
+示例：/etc/yum.repo.d/CentOS-Base.repo
+[base]
+name=CentOS-$releasever - Base
+mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os&infra=$infra
+#baseurl=http://mirror.centos.org/centos/$releasever/os/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+#released updates 
+[updates]
+name=CentOS-$releasever - Updates
+mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates&infra=$infra
+#baseurl=http://mirror.centos.org/centos/$releasever/updates/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+#additional packages that may be useful
+[extras]
+name=CentOS-$releasever - Extras
+mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=extras&infra=$infra
+#baseurl=http://mirror.centos.org/centos/$releasever/extras/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+#additional packages that extend functionality of existing packages
+[centosplus]
+name=CentOS-$releasever - Plus
+mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=centosplus&infra=$infra
+#baseurl=http://mirror.centos.org/centos/$releasever/centosplus/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+#contrib - packages by Centos Users
+[contrib]
+name=CentOS-$releasever - Contrib
+mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=contrib&infra=$infra
+#baseurl=http://mirror.centos.org/centos/$releasever/contrib/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6

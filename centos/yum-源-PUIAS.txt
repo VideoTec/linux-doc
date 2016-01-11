@@ -1,0 +1,47 @@
+http://blog.csdn.net/zzh_my/article/details/44958989
+
+PUIAS Linux是面向桌面和服务器的完整的操作系统，
+它靠编译Red Hat Enterprise Linux的源代码包来创建。
+除了这些上游的软件包外，该项目还提供一些其他的软件仓库：
+“Addons”包含了通常的Red Hat发行中未收入的额外软件包，
+“Computational”提供专门针对科学计算的软件，
+“Unsupported”则收入各种各样的测试性软件 包。
+该发行由美国普林斯顿 大学的高等研究所维护。
+
+创建/etc/yum.repos.d/PUIAS_6_computational.repo，并添加如下内容：
+[PUIAS_6_computational]
+name=PUIAS computational Base $releasever - $basearch
+mirrorlist=http://puias.math.ias.edu/data/puias/computational/$releasever/$basearch/mirrorlist
+#baseurl=http://puias.math.ias.edu/data/puias/computational/$releasever/$basearch
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-puias
+
+下载并安装GPG key
+$ sudo wget -O /etc/pki/rpm-gpg/RPM-GPG-KEY-puias http://springdale.math.ias.edu/data/puias/6/x86_64/os/RPM-GPG-KEY-puias
+$ sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-puias
+
+检验下是否安装成功
+$ sudo rpm -qa gpg*
+
+https://github.com/gitlabhq/gitlab-recipes/tree/master/install/centos
+
+wget -O /etc/yum.repos.d/PUIAS_6_computational.repo https://gitlab.com/gitlab-org/gitlab-recipes/raw/master/install/centos/PUIAS_6_computational.repo
+wget -O /etc/pki/rpm-gpg/RPM-GPG-KEY-puias http://springdale.math.ias.edu/data/puias/6/x86_64/os/RPM-GPG-KEY-puias
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-puias
+
+rpm -qa gpg*
+gpg-pubkey-41a40948-4ce19266
+
+yum repolist
+
+repo id                 repo name                                                status
+PUIAS_6_computational   PUIAS computational Base 6 - x86_64                      2,018
+base                    CentOS-6 - Base                                          4,802
+epel                    Extra Packages for Enterprise Linux 6 - x86_64           7,879
+extras                  CentOS-6 - Extras                                           12
+updates                 CentOS-6 - Updates                                         814
+repolist: 15,525
+
+f you can't see them listed, use the folowing command (from yum-utils package) to enable them:
+
+yum-config-manager --enable epel --enable PUIAS_6_computational

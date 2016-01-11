@@ -1,0 +1,18 @@
+http://www.cyberciti.biz/faq/howto-linux-bsd-unix-set-dns-nameserver/
+
+Under Linux / UNIX / BSD operating system, 
+you need to edit the /etc/resolv.conf file and add the line:
+
+nameserver {IP-OF-THE-DNS-1}
+nameserver {IP-OF-THEISP-DNS-SERVER-2}
+
+$ sudo vi /etc/resolv.conf
+Modify or enter nameserver as follows:
+nameserver 208.67.222.222
+nameserver 208.67.220.220
+
+Save and close the file. To test DNS configuration type any one of the following command:
+$ host google.com
+$ dig google.com
+$ ping google.com
+$ nslookup your-domain.com

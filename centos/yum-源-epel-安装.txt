@@ -1,0 +1,70 @@
+
+http://dl.fedoraproject.org/pub/epel/
+http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
+
+————————————————————————————————————
+https://linux.cn/article-2324-1.html
+————————————————————————————————————
+
+要想安装EPEL，我们先要下载EPEL的rpm安装包
+请注意EPEL 的安装包是独立编译的，所以它可以安装在32位和64位系统中
+下载安装包地址：
+http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
+
+————————————————————————————————————
+http://www.centoscn.com/image-text/install/2015/0414/5185.html
+————————————————————————————————————
+
+CentOS安装阿里云的epol源
+
+1、备份(如有配置其他epel源)
+mv /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup
+mv /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup
+2、下载新repo 到/etc/yum.repos.d/
+epel(RHEL 7)
+wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
+epel(RHEL 6)
+wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-6.repo
+epel(RHEL 5)
+wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-5.rep
+
+————————————————————————————————————
+https://github.com/gitlabhq/gitlab-recipes/tree/master/install/centos
+————————————————————————————————————
+Add EPEL repository
+EPEL is a volunteer-based community effort from the Fedora project to create a repository of high-quality add-on packages that complement the Fedora-based Red Hat Enterprise Linux (RHEL) and its compatible spinoffs, such as CentOS and Scientific Linux.
+
+As part of the Fedora packaging community, EPEL packages are 100% free/libre open source software (FLOSS).
+
+1)Download the GPG key for EPEL repository from fedoraproject and 
+install it on your system:
+
+wget -O /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6 https://www.fedoraproject.org/static/0608B895.txt
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+
+2)Verify that the key got installed successfully:
+rpm -qa gpg*
+gpg-pubkey-0608b895-4bd22942
+
+3)Now install the epel-release-6-8.noarch package, 
+which will enable EPEL repository on your system:
+
+rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+
+————————————————————————————————————
+http://theo.im/blog/2014/05/20/use-aliyun-mirror-to-boost-up-download-speed/
+————————————————————————————————————
+# 安装 EPEL 源
+wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+rpm -Uvh remi-release-6*.rpm epel-release-6*.rpm
+
+# 使用阿里云镜像
+if [[ ! -f /etc/yum.repos.d/epel.repo.backup ]]; then
+    mv /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup 2>/dev/null || :
+fi
+if [[ ! -f /etc/yum.repos.d/epel-testing.repo.backup ]]; then
+    mv /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup 2>/dev/null || :
+fi
+
+wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-6.repo

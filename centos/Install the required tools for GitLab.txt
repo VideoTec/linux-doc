@@ -1,0 +1,8 @@
+https://github.com/gitlabhq/gitlab-recipes/tree/master/install/centos
+
+yum -y update
+yum -y groupinstall 'Development Tools'
+yum -y install readline readline-devel ncurses-devel gdbm-devel glibc-devel tcl-devel openssl-devel curl-devel expat-devel db4-devel byacc sqlite-devel libyaml libyaml-devel libffi libffi-devel libxml2 libxml2-devel libxslt libxslt-devel libicu libicu-devel system-config-firewall-tui redis sudo wget crontabs logwatch logrotate perl-Time-HiRes git cmake libcom_err-devel.i686 libcom_err-devel.x86_64 nodejs
+
+If some packages (eg. gdbm-devel, libffi-devel and libicu-devel) are NOT installed, add the rhel6 optional packages repo to your server to get those packages:
+yum-config-manager --enable rhel-6-server-optional-rpms

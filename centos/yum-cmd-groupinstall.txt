@@ -1,0 +1,10 @@
+
+groupinstall   向系统中安装一组软件包
+
+https://github.com/gitlabhq/gitlab-recipes/tree/master/install/centos
+
+Install the required tools for GitLab
+yum -y groupinstall 'Development Tools'
+
+注意：
+-y, --assumeyes       回答所有的问题为是

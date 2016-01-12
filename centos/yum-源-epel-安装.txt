@@ -20,11 +20,15 @@ CentOS安装阿里云的epol源
 1、备份(如有配置其他epel源)
 mv /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup
 mv /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup
+
 2、下载新repo 到/etc/yum.repos.d/
+
 epel(RHEL 7)
 wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
+
 epel(RHEL 6)
 wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-6.repo
+
 epel(RHEL 5)
 wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-5.rep
 
@@ -50,6 +54,13 @@ gpg-pubkey-0608b895-4bd22942
 which will enable EPEL repository on your system:
 
 rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+         http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
+
+安装完后，需要立即，换成 aliyun。
+wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-6.repo
+
+然后，运行：
+yum repolist
 
 ————————————————————————————————————
 http://theo.im/blog/2014/05/20/use-aliyun-mirror-to-boost-up-download-speed/

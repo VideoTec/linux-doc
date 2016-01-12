@@ -1,0 +1,38 @@
+https://github.com/gitlabhq/gitlab-recipes/tree/master/install/centos
+
+Install mail server
+
+In order to receive mail notifications, make sure to install a mail server. The recommended one is postfix and you can install it with:
+
+yum -y install postfix
+
+To use and configure sendmail instead of postfix see Advanced Email Configurations.
+https://github.com/gitlabhq/gitlab-recipes/blob/master/e-mail/configure_email.md
+
+https://zh.wikipedia.org/wiki/Postfix
+
+Postfix 是一种电子邮件服务器，
+它是由任职于IBM华生研究中心（T.J. Watson Research Center）
+的荷兰籍研究员Wietse Venema为了改良sendmail邮件服务器而产生的。
+最早在1990年代晚期出现，是一个开放源代码的软件
+
+http://wiki.ubuntu.org.cn/Postfix_%E5%9F%BA%E6%9C%AC%E8%AE%BE%E7%BD%AE%E6%8C%87%E5%8D%97
+
+Postfix 基本设置指南
+
+这份指南将帮助你建立一个基本的企业级Postfix邮件服务器。主要目的是教会你如何安装和配置一个包含IMAP和POP3服务的基本Postfix邮件服务器。在此我不打算告诉你诸如病毒检测或垃圾过滤等高级应用。
+
+这份指南较偏向于理论，适合postfix初学者。我的高级postfix指南是Postfix 虚拟邮箱和病毒过滤指南和Postfix 完整虚拟邮件系统指南。如果你是初学者，可以在看完这份基本指南后，查阅他们
+
+安装配置过程中，postfix通过Internet发送和接收email，并存储在用户邮箱里。同时客户也可以通过IMAP或者POP3恢复他们的邮件。其中的客户认证是通过Courier Authdaemon模块的。下图表示出了这个过程
+
+https://www.centos.bz/2012/04/postfix-works-briefly/
+
+简述Postfix的工作原理
+
+传统的Sendmail将所有功能都集中在同一个程序里，这种结构我们称之为“单体式设计”(monolithic).Postfix采用专职负责的策略，不同的功能分别交由不同的专门程序处理，这种结构称为“模块化设计”(modular)。这些自成一格的专门程序，我们称之为组件(component)。大多数组件都是以daemon的形式存在，也就是常驻在系统内存里的连续动作的后台进程(background process)。
+　　当Postfix被启动后，首先启动的是master daemon，它主导邮件的处理流程，同时也是其他组件的总管。在处理邮件的过程中，master会启动对应功能的组件来处理相关事宜，被master启动的组件，在完成交付的工作之后会自行结束；或者，如果组件的处理时间超过时限，或是工作量到达预定限度，组件也会自行结束。master daemon会常驻在系统中，当管理员启动它时，它从main.cf和master.cf这两个配置文件取得启动参数。
+
+http://baike.baidu.com/subview/568878/568878.htm
+
+postfix是Wietse Venema在IBM的GPL协议之下开发的MTA（邮件传输代理）软件。postfix是Wietse Venema想要为使用最广泛的sendmail提供替代品的一个尝试。在Internet世界中，大部分的电子邮件都是通过sendmail来投递的，大约有100万用户使用sendmail，每天投递上亿封邮件。这真是一个让人吃惊的数字。Postfix试图更快、更容易管理、更安全，同时还与sendmail保持足够的兼容性。

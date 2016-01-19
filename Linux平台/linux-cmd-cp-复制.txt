@@ -1,1 +1,7 @@
 cp 620.txt /etc/hosts
+
+root@lte26007:/ # cp -h
+cp -h
+cp: invalid option -- h
+usage: cp [-R [-H | -L | -P]] [-f | -i] [-alNpv] src target
+       cp [-R [-H | -L | -P]] [-f | -i] [-alNpv] src1 ... srcN directory

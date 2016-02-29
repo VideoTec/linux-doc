@@ -1,0 +1,15 @@
+http://stackoverflow.com/questions/9381463/how-to-create-a-file-in-linux-from-terminal-window
+
+Depending on what you want the file to contain:
+
+1）touch /path/to/file for an empty file
+
+2）somecommand > /path/to/file for a file containing the output of some command.
+
+  eg: grep --help > randomtext.txt
+      echo "This is some text" > randomtext.txt
+
+3）nano /path/to/file or vi /path/to/file (or any other editor emacs,gedit etc)
+It either opens the existing one 
+for editing or creates & opens the empty file to enter, 
+if it doesn't exist

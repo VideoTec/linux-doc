@@ -1,0 +1,63 @@
+http://numbermonk.com/hexadecimal/96
+https://en.wikipedia.org/wiki/Grave_accent
+The grave accent ( ` ) (/ˈɡreɪv/ or UK /ˈɡrɑːv/)
+重音符或抑音符（` ）是一个变音符号，用于
+希腊语（1982年前）、法语、加泰罗尼亚语、威尔士语、意大利语、越南语、苏格兰盖尔语、挪威语、葡萄牙语和其他语言内
+
+http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_03_04.html
+Command substitution
+
+Command substitution allows the output of a command to replace the command itself. Command substitution occurs when a command is enclosed like this:
+
+$(command)
+
+or like this using backticks:
+
+`command`
+
+Bash performs the expansion by executing COMMAND and replacing the command substitution with the standard output of the command, with any trailing newlines deleted. Embedded newlines are not deleted, but they may be removed during word splitting.
+
+
+franky ~> echo `date`
+Thu Feb 6 10:06:20 CET 2003
+When the old-style backquoted form of substitution is used, backslash retains its literal meaning except when followed by "$", "`", or "\". The first backticks not preceded by a backslash terminates the command substitution. When using the "$(COMMAND)" form, all characters between the parentheses make up the command; none are treated specially.
+
+Command substitutions may be nested. To nest when using the backquoted form, escape the inner backticks with backslashes.
+
+If the substitution appears within double quotes, word splitting and file name expansion are not performed on the results.
+
+http://blog.csdn.net/zlQQhs/article/details/8159693
+
+命令替换 `  ` 或 $()
+      命令替换是将一个命令作为另一个命令的一部分，执行时被替换的部分先执行，执行的给果作为
+      参数传给外层命令
+
+      如: mkdir `echo $USER`
+             mkdir `date`
+
+          mkdir $(date)
+
+返回值  
+    每执行一个命令都有它的返回值，返回值用来标识命令的执行成功与否
+    查看上一个命令执行的返回值：echo $?
+    0 表示执行成功
+    
+http://www.jiancool.com/article/62133765214/
+bash中的命令替换有两种方法：
+(1) $(command)
+(2) `command`
+
+   在``里，可以使用backslash字符，且只有它后面紧跟'$' '`' '\'时，baskslash才有转义效果。
+   manuan里面说$里的内容全都是应该当作command的内容，不允许有特殊功能字符出现，我就纳闷了，
+echo $(cat $(echo "1.h")) 就是合法的命令，如果$的括号内不不允许特殊功能字符，那$是吃屎的阿。所以manual里面的有些话不敢信。这就是nested 命令
+
+    echo `cat \`echo "1.h"\`` 也可以达到同样的效果，结果就是将文件1.h的内容打印出来了。
+
+    在脚本中进行命令替换要注意一点，如下脚本中：
+    test.sh内容：
+    `echo "haha"` 
+    表面挂上看是合法的，但是非法的，因为他与
+    echo "haha"
+    是不一样的，前者将命令执行时向stdout的输出作为命令结果并直接在校本中将命令替换成haha。然后脚本解释器就会报错，无法识别haha。而后者不一样，它直接执行，并将结果直接写到标准输出了。这就是在校本中调用echo和通过命令替换调用echo的区别，当然$(echo "haha")也会出同样的错误。
+
+   因此命令替换不能孤单的放在那里，必须加上别的命令去处理它。

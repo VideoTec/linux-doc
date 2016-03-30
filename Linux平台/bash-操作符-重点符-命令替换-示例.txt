@@ -1,0 +1,4 @@
+#!/bin/bash
+for b_name in `git branch -a | grep remotes | grep -v HEAD | grep -v master`; do
+    git branch --track ${b_name##*/} $b_name
+done

@@ -1,0 +1,34 @@
+http://stackoverflow.com/questions/2663456/how-to-write-a-signal-handler-to-catch-sigsegv
+SIGSEGV 信号会重复发送，需要调用 exit(1);
+
+When your signal handler returns 
+(assuming it doesn't call exit or longjmp or something that prevents it from actually returning), 
+the code will continue at the point the signal occurred, 
+reexecuting the same instruction. 
+Since at this point, the memory protection has not been changed, 
+it will just throw the signal again, 
+and you'll be back in your signal handler in an infinite loop.
+
+
+
+http://www.thegeekstuff.com/2012/03/catch-signals-sample-c-code/
+
+#include<stdio.h>
+#include<signal.h>
+#include<unistd.h>
+
+void sig_handler(int signo)
+{
+  if (signo == SIGINT)
+    printf("received SIGINT\n");     这个例子没有调用 exit, 因为：这个信号不会重复产生
+}
+
+int main(void)
+{
+  if (signal(SIGINT, sig_handler) == SIG_ERR)
+  printf("\ncan't catch SIGINT\n");
+  // A long long wait so that we can easily issue a signal to this process
+  while(1) 
+    sleep(1);
+  return 0;
+}

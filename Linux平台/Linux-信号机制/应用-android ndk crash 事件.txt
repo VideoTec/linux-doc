@@ -1,3 +1,25 @@
+http://stackoverflow.com/questions/1083154/how-can-i-catch-sigsegv-segmentation-fault-and-get-a-stack-trace-under-jni-on
+
+http://stackoverflow.com/questions/1083154/how-can-i-catch-sigsegv-segmentation-fault-and-get-a-stack-trace-under-jni-on/1789879#1789879
+一个实现的开源工程
+https://github.com/chrisboyle/sgtpuzzles/tree/9561.1
+I actually got a signal handler working without doing anything too exotic, 
+and have released code using it, which you can see on github 
+(edit: linking to historical release; I removed the crash handler since then). 
+http://blog.sina.com.cn/s/blog_749d1a9f0101doy7.html
+这里解释了上面工程
+
+http://github.dudukr.com/VWiki/2013/02/21/tombstone-on-android.html
+Android平台抓取native crash log
+
+https://github.com/xroche/coffeecatch
+https://github.com/xroche/coffeecatch.git
+git@github.com:xroche/coffeecatch.git
+CoffeeCatch, a tiny native POSIX signal catcher 
+(especially useful for JNI code on Android/Dalvik, but it can be used in non-Java projects)
+
+It allows to "gracefully" recover from a signal (SIGSEGV, SIGBUS...) as if it was an exception. It will not gracefully recover from allocator/mutexes corruption etc., however, but at least "most" gentle crashes (null pointer dereferencing, integer division, stack overflow etc.) should be handled without too much troubles.
+
 http://blog.csdn.net/john_crash/article/details/46971535
 
 安装一个SIGSEGV处理用来打印stacktrace到stderr
@@ -19,3 +41,20 @@ int main(int argc, char **argv) {
   signal(SIGSEGV, handler);   // install our handler
   foo(); // this will call foo, bar, and baz.  baz segfaults.
 }
+
+https://kobablog.wordpress.com/2011/05/12/debuggerd-of-android/
+If you port Android to your system or develop native libraries using NDK, you have a experience to see crash dump on logcat. That shows CPU registers and stack dumps of the process caused memory fault or other exception.
+
+void debugger_init()
+{
+    signal(SIGILL, debugger_signal_handler);
+    signal(SIGABRT, debugger_signal_handler);
+    signal(SIGBUS, debugger_signal_handler);
+    signal(SIGFPE, debugger_signal_handler);
+    signal(SIGSEGV, debugger_signal_handler);
+    signal(SIGSTKFLT, debugger_signal_handler);
+    signal(SIGPIPE, debugger_signal_handler);
+}
+
+参考：
+https://android.googlesource.com/platform/system/core/+/master/debuggerd/

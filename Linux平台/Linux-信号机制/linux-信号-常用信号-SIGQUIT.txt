@@ -1,0 +1,4 @@
+http://blog.csdn.net/rambo2188/article/details/6998349
+
+用kill命令发送SIGQUIT给进程号为513的进程
+adb shell kill -3 513 

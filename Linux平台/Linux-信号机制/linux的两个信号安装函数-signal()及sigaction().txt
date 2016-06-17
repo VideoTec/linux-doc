@@ -1,0 +1,25 @@
+http://www.ibm.com/developerworks/cn/linux/l-ipc/part2/index1.html
+
+对于目前linux的两个信号安装函数:signal()及sigaction()来说，
+它们都不能把SIGRTMIN以前的信号变成可靠信号（都不支持排队，仍有可能丢失，仍然是不可靠信号），
+而且对SIGRTMIN以后的信号都支持排队。
+这两个函数的最大区别在于，
+经过sigaction安装的信号都能传递信息给信号处理函数（对所有信号这一点都成立），而
+经过signal安装的信号却不能向信号处理函数传递信息。
+对于信号发送函数来说也是一样的。
+
+signal() 
+#include <signal.h> 
+void (*signal(int signum, void (*handler))(int)))(int); 
+如果该函数原型不容易理解的话，可以参考下面的分解方式来理解： 
+typedef void (*sighandler_t)(int)； 
+sighandler_t signal(int signum, sighandler_t handler)); 
+第一个参数指定信号的值，
+第二个参数指定针对前面信号值的处理，
+可以忽略该信号（参数设为SIG_IGN）；
+可以采用系统默认方式处理信号(参数设为SIG_DFL)；也
+可以自己实现处理方式(参数指定一个函数地址)。
+ 
+如果signal()调用
+成功，返回最后一次为安装信号signum而调用signal()时的handler值；
+失败则返回SIG_ERR。

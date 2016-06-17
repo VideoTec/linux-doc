@@ -1,0 +1,9 @@
+http://www.cnblogs.com/taobataoma/archive/2007/08/30/875743.html
+
+typedef void (*sighandler_t)(int); 
+sighandler_t signal(int signum, sighandler_t handler); 
+但这种格式在不同的系统中有不同的类型定义，所以要使用这种格式，最好还是参考一下联机手册。 
+
+在调用中，参数signum指出要设置处理方法的信号。第二个参数handler是一个处理函数，或者是 
+SIG_IGN：忽略参数signum所指的信号。 
+SIG_DFL：恢复参数signum所指信号的处理方法为默认值。 

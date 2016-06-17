@@ -1,0 +1,18 @@
+http://github.dudukr.com/VWiki/2013/02/21/tombstone-on-android.html
+
+当 Linux 应用程序在执行时发生严重错误，
+一般会导致程序 crash。其中，
+Linux 专门提供了一类 crash 信号，
+在程序接收到此类信号时，
+缺省操作是将 crash 的现场信息记录到 core 文件，然后终止进程。
+
+Crash信号列表
+
+Signal	Description
+SIGSEGV	Invalid memory reference.
+SIGBUS	Access to an undefined portion of a memory object.
+SIGFPE	Arithmetic operation error, like divide by zero.
+SIGILL	Illegal instruction, like execute garbage or a privileged instruction
+SIGSYS	Bad system call.
+SIGXCPU	CPU time limit exceeded.
+SIGXFSZ	File size limit exceeded.

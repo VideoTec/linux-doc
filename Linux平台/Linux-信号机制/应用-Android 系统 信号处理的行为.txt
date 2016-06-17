@@ -1,0 +1,28 @@
+http://blog.csdn.net/rambo2188/article/details/6998349
+
+Android也是Linux系统。所以其信号处理方式不会有本质的改变。
+但是为了开发和调试的需要，android对一些信号的处理定义了额外的行为
+
+SIGQUIT
+1）统UNIX系统应用，对SIGQUIT信号的默认行为是 "终止 + CORE"。也就是产生core dump文件后，立即终于运行
+2）Android Dalvik应用收到该信号后，会 打印改应用中所有线程的当前状态，
+并且并不是强制退出。这些状态通常保存在一个特定的叫做trace的文件中。
+一般的路径是/data/anr/trace.txt.
+
+SIGILL, SIGABRT, SIGBUS, SIGFPE, SIGSEGV, SIGSTKFLT
+Android进程 在退出前，会生成 tombstone 文件，记录该进程退出前的轨迹
+分析tombstone的方法
+
+adb shell kill -11 307 
+adb shell kill -11 307 
+
+要产生core dump并终止某进程，
+我们需要 连续发送两次改信号，
+并且中间间隔在0.2秒到3秒之间。
+
+如果间隔过小， 
+Android可能无法接收第一个signal。
+如果时间过久，android将简单的终止进程，
+而没有 core dump产生。 
+
+我们会在后面 详细的介绍产生这种行为的原因

@@ -1,0 +1,68 @@
+https://github.com/chrisboyle/sgtpuzzles/blob/8750.5/android.c#L528
+
+static struct sigaction old_sa[NSIG];
+
+void android_sigaction(int signal, siginfo_t *info, void *reserved)
+{
+    (*env)->CallVoidMethod(env, obj, nativeCrashed);
+    old_sa[signal].sa_handler(signal);
+}
+
+    // Try to catch crashes...
+    struct sigaction handler;
+    memset(&handler, 0, sizeof(sigaction));
+    handler.sa_sigaction = android_sigaction;
+    handler.sa_flags = SA_RESETHAND;
+#define CATCHSIG(X) sigaction(X, &handler, &old_sa[X])
+    CATCHSIG(SIGILL);
+    CATCHSIG(SIGABRT);
+    CATCHSIG(SIGBUS);
+    CATCHSIG(SIGFPE);
+    CATCHSIG(SIGSEGV);
+    CATCHSIG(SIGSTKFLT);
+    CATCHSIG(SIGPIPE);
+    
+http://github.dudukr.com/VWiki/2013/02/21/tombstone-on-android.html
+
+#include<signal.h>  
+int sigaction(int sig, struct sigaction *act , struct sigaction *oact) ;  
+
+struct sigaction{  
+   void     (*sa_handler)(int);  
+   void     (*sa_sigaction)(int, siginfo_t *, void *);  
+   sigset_t   sa_mask;  
+   int        sa_flags;  
+   void     (*sa_restorer)(void);  
+}
+
+1. 给一个signal安装一个handler，
+并且在使用sigaction修改该handler之前，不用reinstall。 
+
+2. 使用sigaction结构，该结构包含handler，其中可以指定2个handler，
+一个是使用sigiinfo_t等参数的handler，即支持给handler更多的参数，
+使其可以知道自己是被什么进程，那个用户，发来的什么信号，发来该信号的具体的原因是什么，
+当然要像这样，得给sigaction的sa_flags设置SA_SIGINFO标记。 
+
+3．使用sigaction的sa_flags标记还可以
+指定系统调用被这个信号打断后，
+是直接返回，还是自动restart. 
+一个典型就是，
+一般我们不让SIGALRM信号将被打断的系统调用restart，
+因为SIGALARM一般本来就是用来打断一个block的调用的。 
+
+4. 为了模仿老的signal函数的作用，
+实现 unreliable 的类似signal的操作，
+可以通过给sa_flags设置SA_RESETHAND使handler不会自动reinstall,
+以及SA_NODEFER标记来使在本信号的handler内部，
+本信号不被自动block，
+当然如果你手动在sa_mask中指定要block本信号的话就可以将其block了。 
+
+5. 通过使用sigaction结构中的sa_mask，
+可以在该handler执行的过程中，block一些信号，
+注意，
+这个mask是与我们使用sigprocmask设置的mask不同的mask，
+这个mask的作用范围仅限于本handler函数，
+而且他不会将我们用sigprocmask设置的mask取消，
+而仅仅是在其基础上再次将一些信号block掉，
+当handler结束时，系统会自动将mask恢复成以前的样子，
+所以这个sigaction中的sa_mask只作用本信号的handler的执行时间。

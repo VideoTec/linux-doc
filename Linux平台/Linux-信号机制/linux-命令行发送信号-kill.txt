@@ -1,0 +1,3 @@
+http://blog.csdn.net/rambo2188/article/details/6998349
+adb shell kill -3 513  
+adb shell kill -11 307 

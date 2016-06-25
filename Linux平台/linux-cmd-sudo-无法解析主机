@@ -1,0 +1,26 @@
+wangxiang@wangxiang-M68MT-S2P:~/software$ sudo alien jdk-8u91-linux-x64.rpm 
+sudo: 无法解析主机：wangxiang-M68MT-S2P
+
+
+http://blog.csdn.net/robertsong2004/article/details/36409941
+
+在/etc/hosts 里追加如下：
+
+127.0.1.1   hostname
+
+
+为什么要这么设定，参照：
+
+http://www.debian.org/doc/manuals/debian-reference/ch05.en.html#s-net-dns
+
+
+The IP address 127.0.1.1 in the second line of this example may not be found on some other Unix-like systems. TheDebian Installer creates this entry for a system without a permanent IP address as a workaround for some software (e.g., GNOME) as documented in thebug #719621.
+
+http://forum.ubuntu.org.cn/viewtopic.php?t=467359
+因为修改过主机名字，解决方法：
+sudo gedit /etc/hosts
+最上面两行应当是：
+127.0.0.1 localhost
+127.0.1.1 （你原来的主机名）
+改第二行：
+127.0.1.1 （你现在的主机名）

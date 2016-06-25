@@ -1,0 +1,122 @@
+dmidecode 查看硬件信息
+
+查看 cpu 信息：
+cat /proc/cpuinfo
+
+查看内在信息：
+cat /proc/meminfo
+
+dmidecode允许你在Linux系统下获取有关硬件方面的信息。
+dmidecode遵循SMBIOS/DMI标准，其输出的信息包括BIOS、系统、主板、处理器、内存、缓存等等。
+
+DMI（Desktop Management Interface,DMI）
+就是帮助收集电脑系统信息的管理系统，
+DMI信息的收集必须在严格遵照SMBIOS规范的前提下进行。
+SMBIOS（System Management BIOS）是主板或系统制造者以标准格式显示产品管理信息所需遵循的统一规范。
+SMBIOS和DMI是由行业指导机构Desktop Management Task Force(DMTF)起草的开放性的技术标准，
+其中DMI设计适用于任何的平台和操作系统。
+
+DMI充当了管理工具和系统层之间接口的角色。
+它建立了标准的可管理系统更加方便了电脑厂商和用户对系统的了解。
+DMI的主要组成部分是Management Information Format(MIF)数据库。
+这个数据库包括了所有有关电脑系统和配件的信息。
+通过DMI，用户可以获取序列号、电脑厂商、串口信息以及其它系统配件信息。
+
+查看内存类型
+
+wangxiang@wangxiang-M68MT-S2P:~$ sudo dmidecode -t 16
+# dmidecode 3.0
+Getting SMBIOS data from sysfs.
+SMBIOS 2.4 present.
+
+Handle 0x001F, DMI type 16, 15 bytes
+Physical Memory Array
+	Location: System Board Or Motherboard
+	Use: System Memory
+	Error Correction Type: None
+	Maximum Capacity: 8 GB                  支持最大内存 8GB
+	Error Information Handle: Not Provided
+	Number Of Devices: 2                    两个内存插槽
+
+技嘉M68MT最大支持4G DDR3单条内存的，因为这个主板比较老的了，
+最大支持总容量8G内存，就是两条4G组成的8G，所以只能用单条4G DDR3内存
+
+sudo dmidecode
+
+Handle 0x001F, DMI type 16, 15 bytes
+Physical Memory Array
+	Location: System Board Or Motherboard
+	Use: System Memory
+	Error Correction Type: None
+	Maximum Capacity: 8 GB
+	Error Information Handle: Not Provided
+	Number Of Devices: 2
+
+Handle 0x0020, DMI type 17, 27 bytes
+Memory Device
+	Array Handle: 0x001F
+	Error Information Handle: Not Provided
+	Total Width: 64 bits
+	Data Width: 64 bits
+	Size: 2048 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: A0
+	Bank Locator: Bank0/1
+	Type: Unknown
+	Type Detail: None
+	Speed: 1333 MHz
+	Manufacturer:  
+	Serial Number:  
+	Asset Tag:  
+	Part Number:  
+
+Handle 0x0021, DMI type 17, 27 bytes
+Memory Device
+	Array Handle: 0x001F
+	Error Information Handle: Not Provided
+	Total Width: 64 bits
+	Data Width: 64 bits
+	Size: 2048 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: A1
+	Bank Locator: Bank2/3
+	Type: Unknown
+	Type Detail: None
+	Speed: 1333 MHz
+	Manufacturer:  
+	Serial Number:  
+	Asset Tag:  
+	Part Number:  
+
+Handle 0x0022, DMI type 19, 15 bytes
+Memory Array Mapped Address
+	Starting Address: 0x00000000000
+	Ending Address: 0x000FFFFFFFF
+	Range Size: 4 GB
+	Physical Array Handle: 0x001F
+	Partition Width: 1
+
+Handle 0x0023, DMI type 20, 19 bytes
+Memory Device Mapped Address
+	Starting Address: 0x00000000000
+	Ending Address: 0x0007FFFFFFF
+	Range Size: 2 GB
+	Physical Device Handle: 0x0020
+	Memory Array Mapped Address Handle: 0x0022
+	Partition Row Position: 1
+
+Handle 0x0024, DMI type 20, 19 bytes
+Memory Device Mapped Address
+	Starting Address: 0x00080000000
+	Ending Address: 0x000FFFFFFFF
+	Range Size: 2 GB
+	Physical Device Handle: 0x0021
+	Memory Array Mapped Address Handle: 0x0022
+	Partition Row Position: 1
+
+Handle 0x0025, DMI type 32, 11 bytes
+System Boot Information
+	Status: No errors detected
+

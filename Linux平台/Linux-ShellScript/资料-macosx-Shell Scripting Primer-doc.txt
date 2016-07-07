@@ -1,0 +1,7 @@
+https://developer.apple.com/library/mac/documentation/OpenSource/Conceptual/ShellScripting/shell_scripts/shell_scripts.html
+
+1. 编辑脚本文件
+2. 设置脚本可执行属性 chmod u+x hello_world.sh
+-rw-r--r--  1 yanlina  staff        30  7  6 14:51 jenkins-startup.sh
+改变成
+-rwxr--r--  1 yanlina  staff        30  7  6 14:51 jenkins-startup.sh

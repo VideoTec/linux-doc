@@ -1,0 +1,9 @@
+http://stackoverflow.com/questions/12384353/sys-fcntl-h-no-such-file-while-cross-compiling-pcsclite-for-android
+
+Many of the Android headers aren't in the standard location. 
+You can use the following command to search the NDK for the location of missing files find . 
+-name fcntl.h. It appears include <sys/fcntl.h> needs to be changed to include <fcntl.h>.
+
+The Android pthread library does not include pthread_cancel see 'docs/OVERVIEW.html'. It should not be difficult to replace pthread_cancel.
+
+I am not sure what to do about mqueue.

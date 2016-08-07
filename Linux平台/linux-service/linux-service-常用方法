@@ -1,0 +1,28 @@
+http://codingstandards.iteye.com/blog/985455
+
+格式：service <service>
+打印指定服务<service>的命令行使用帮助。
+ 
+格式：service <service> start
+启动指定的系统服务<service>
+ 
+格式：service <service> stop
+停止指定的系统服务<service>
+ 
+格式：service <service> restart
+重新启动指定的系统服务<service>，即先停止（stop），然后再启动（start）。
+ 
+----------------------------------------
+下面的命令没有找到：
+----------------------------------------
+格式：chkconfig --list
+查看系统服务列表，以及每个服务的运行级别。
+ 
+格式：chkconfig <service> on
+设置指定服务<service>开机时自动启动。
+ 
+格式：chkconfig <service> off
+设置指定服务<service>开机时不自动启动。
+ 
+格式：ntsysv
+以全屏幕文本界面设置服务开机时是否自动启动。

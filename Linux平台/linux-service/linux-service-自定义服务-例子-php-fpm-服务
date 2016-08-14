@@ -37,8 +37,8 @@ pid = run/php-fpm.pid
 set -e
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 PHP_PATH=/www/php                     不知道这个路径怎么修改, 下面用到的有：
-                                      php-fpm 可执行文件路径 $PHP_PATH/sbin/$NAME
-                                      PID文件路径            $PHP_PATH/etc/php-fpm.conf
+                                      php-fpm 可执行文件路径 $PHP_PATH/sbin/$NAME 这个路径是 /usr/local/sbin/php-fpm
+                                      PID文件路径            $PHP_PATH/var/run/$NAME.pid 这个路径是 /usr/local/var/run
 DESC="php-fpm daemon"
 NAME=php-fpm
 # php-fpm路径

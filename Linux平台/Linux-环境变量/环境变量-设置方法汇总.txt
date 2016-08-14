@@ -3,10 +3,25 @@ http://www.flakor.cn/2014-09-14-714.html
 mac 一般使用bash作为默认shell
 
 Mac系统的环境变量，加载顺序为：
-/etc/profile 
+
+/etc/profile    
+ubuntu 使用这个文件来定义环境变量
+export JETTY_HOME=/home/wangxiang/jetty-distribution-9.3.11.v20160721:$PATH
+export JETTY_ARGS=jetty.http.port=8085\ jetty.ssl.port=8445 注意空格需要使用 \ 转义一下
+
 /etc/paths      一行一个路径
 
-~/.bash_profile  export PATH=/opt/local/bin:/opt/local/sbin:$PATH 
+~/.bash_profile  
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH 
+export JETTY_HOME=/home/wangxiang/jetty-distribution-9.3.11.v20160721:$PATH
+export JETTY_ARGS=jetty.http.port=8085 jetty.ssl.port=8445 这样写错误，不能有空格。
+export JETTY_ARGS=jetty.http.port=8085\ jetty.ssl.port=8445 注意空格需要使用 \ 转义一下。
+http://askubuntu.com/questions/121073/why-bash-profile-is-not-getting-sourced-when-opening-a-terminal
+When you log in graphically, 
+~/.profile will be specifically sourced by the script that launches gnome-session
+ (or whichever desktop environment you're using). 
+So ~/.bash_profile is not sourced at all when you log in graphically.
+
 ~/.bash_login    有可能会被忽略不读
 ~/.profile       有可能会被忽略不读
 

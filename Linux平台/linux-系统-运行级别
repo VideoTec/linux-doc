@@ -1,0 +1,18 @@
+http://blog.csdn.net/shb_derek1/article/details/8489112
+
+Ubuntu中的运行级别
+
+0	（关闭系统）
+1	（单用户模式，只允许root用户对系统进行维护。）
+2 到 5	（多用户模式，其中3为字符界面，5为图形界面。）
+6	（重启系统）
+
+切换运行级别
+
+init [0123456Ss]
+例如：init 0 命令关机； init 6 命令重新启动
+
+启动项管理工具
+2
+sudo install sysv-rc-conf //或者使用带gui的工具bum
+sudo sysv-rc-conf

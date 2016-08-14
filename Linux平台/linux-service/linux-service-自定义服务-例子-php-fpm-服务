@@ -1,0 +1,94 @@
+http://www.xiaolangspace.com/archives/165
+
+linux 将php-fpm添加到启动项（ubuntu）
+
+------------------------------------------------------
+修改php-fpm.conf配置，生成php-fpm.pid(只需要把配置文件中“pid = run/php-fpm.pid…”前的分号去掉即可):
+------------------------------------------------------
+
+需要注意的是，shell中需要通过php安装目录/var/run/php-fpm.pid文件获取php-fpm的进程pid，
+这个文件需要配置php-fpm.conf文件才会在启动php-fpm时生成。
+
+修改php-fpm.conf配置，生成php-fpm.pid
+(只需要把配置文件中“pid = run/php-fpm.pid…”前的分号去掉即可):
+
+....
+[global]
+; Pid file
+; Note: the default prefix is /www/php/var
+; Default Value: none
+pid = run/php-fpm.pid
+....
+
+------------------------------------------------------
+/etc/init.d 中的脚本：
+------------------------------------------------------
+
+#!/bin/bash
+#tartup script for the PHP-FPM server.
+#
+# chkconfig: 345 85 15
+# description: PHP is an HTML-embedded scripting language
+# processname: php-fpm
+# config: /usr/local/php/etc/php.ini
+
+# Source function library.
+#./etc/rc.d/init.d/functions
+set -e
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+PHP_PATH=/www/php                     不知道这个路径怎么修改, 下面用到的有：
+                                      php-fpm 可执行文件路径 $PHP_PATH/sbin/$NAME
+                                      PID文件路径            $PHP_PATH/etc/php-fpm.conf
+DESC="php-fpm daemon"
+NAME=php-fpm
+# php-fpm路径
+DAEMON=$PHP_PATH/sbin/$NAME
+# 配置文件路径
+CONFIGFILE=$PHP_PATH/etc/php-fpm.conf
+# PID文件路径(在php-fpm.conf设置)
+PIDFILE=$PHP_PATH/var/run/$NAME.pid
+SCRIPTNAME=/etc/init.d/$NAME
+# Gracefully exit if the package has been removed.
+test -x $DAEMON || exit 0
+ 
+rh_start() {
+  $DAEMON -y $CONFIGFILE || echo -n " already running"
+}
+ 
+rh_stop() {
+  kill -QUIT `cat $PIDFILE` || echo -n " not running"
+}
+ 
+rh_reload() {
+  kill -HUP `cat $PIDFILE` || echo -n " can't reload"
+}
+ 
+case "$1" in
+  start)
+        echo -n "Starting $DESC: $NAME"
+        rh_start
+        echo "."
+        ;;
+  stop)
+        echo -n "Stopping $DESC: $NAME"
+        rh_stop
+        echo "."
+        ;;
+  reload)
+        echo -n "Reloading $DESC configuration..."
+        rh_reload
+        echo "reloaded."
+  ;;
+  restart)
+        echo -n "Restarting $DESC: $NAME"
+        rh_stop
+        sleep 1
+        rh_start
+        echo "."
+        ;;
+  *)
+         echo "Usage: $SCRIPTNAME {start|stop|restart|reload}" >&2
+         exit 3
+        ;;
+esac
+exit 0

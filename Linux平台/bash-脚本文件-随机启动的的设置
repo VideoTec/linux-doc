@@ -1,0 +1,114 @@
+配置 /etc/rc.local 添加 startup.sh 脚本绝对路径
+----- 这个方法不生效
+
+参考：
+linux-系统-主要启动步骤-启动项-update-rc.d命令
+
+----------------------------------------------------------------------------------
+设置成服务
+----------------------------------------------------------------------------------
+
+http://askubuntu.com/questions/223944/how-to-automatically-restart-tomcat7-on-system-reboots
+
+Init script contents:
+
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:        tomcat7
+# Required-Start:  $network
+# Required-Stop:   $network
+# Default-Start:   2 3 4 5
+# Default-Stop:    0 1 6
+# Short-Description: Start/Stop Tomcat server
+### END INIT INFO
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+start() {
+ sh /usr/share/tomcat7/bin/startup.sh
+}
+
+stop() {
+ sh /usr/share/tomcat7/bin/shutdown.sh
+}
+
+case $1 in
+  start|stop) $1;;
+  restart) stop; start;;
+  *) echo "Run as $0 <start|stop|restart>"; exit 1;;
+esac
+
+Change its permissions and add the correct symlinks automatically:
+
+chmod 755 /etc/init.d/tomcat7
+update-rc.d tomcat7 defaults
+
+参考：
+虽然可以按照上文方法来手动添加, 但是更简单的是使用update-rc.d命令来添加. 如:
+sudo update-rc.d hello defaults
+
+如果要删除这个服务, 则:
+sudo update-rc.d hello remove
+
+注意如果 脚本需要传参数，使用方法是：
+http://stackoverflow.com/questions/14302389/how-to-call-a-shell-script-and-pass-argument-from-another-shell-script
+/home/admin/script2.sh "$ARG1" "$ARG2" "$ARG3"
+(make sure it's executable).
+
+示例：
+
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:        jetty
+# Required-Start:  $network
+# Required-Stop:   $network
+# Default-Start:   2 3 4 5
+# Default-Stop:    0 1 6
+# Short-Description: Start/Stop jetty server
+### END INIT INFO
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+start() {
+ /home/wangxiang/jetty-distribution-9.3.11.v20160721/bin/jetty.sh start
+}
+
+stop() {
+ /home/wangxiang/jetty-distribution-9.3.11.v20160721/bin/jetty.sh stop
+}
+
+case $1 in
+  start|stop) $1;;
+  restart) stop; start;;
+  *) echo "Run as $0 <start|stop|restart>"; exit 1;;
+esac
+
+
+----------------------------------------------------------------------------------
+http://askubuntu.com/questions/814/how-to-run-scripts-on-start-up
+----------------------------------------------------------------------------------
+
+Depending on what sort of scripts you need to run.. 
+For services and the like you should use upstart. 
+But for a user script these should be launched as session scripts by gnome! 
+Have a look under System > Preferences > Startup Applications.
+
+On a side note if you need some scripts to be run on terminal login 
+you can add them to the .bash_login file in your home directory.
+
+A simple command (one which doesn't need to remain running) 
+could use an Upstart job like:
+
+start on startup
+task
+exec /path/to/command
+
+Save this in a .conf file 
+
+in /etc/init 
+(if you need it to run as root when the system boots up), or 
+
+in ~/.config/upstart 
+(if you need it to run as your user when you log in).

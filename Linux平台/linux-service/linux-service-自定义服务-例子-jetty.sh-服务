@@ -1,0 +1,42 @@
+第一步：在 /etc/init.d 中添加脚本文件 jetty
+
+第二步：把脚本文件的属性改为可执行
+
+chmod +x jetty
+
+第三步：添加到启动项里
+
+sudo update-rc.d jetty default
+
+-----------------------------------------------------
+jetty 脚本内容
+-----------------------------------------------------
+
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:        jetty
+# Required-Start:  $network
+# Required-Stop:   $network
+# Default-Start:   2 3 4 5
+# Default-Stop:    0 1 6
+# Short-Description: Start/Stop jetty server
+### END INIT INFO
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+start() {
+ /home/wangxiang/jetty-distribution-9.3.11.v20160721/bin/jetty.sh start
+}
+
+stop() {
+ /home/wangxiang/jetty-distribution-9.3.11.v20160721/bin/jetty.sh stop
+}
+
+case $1 in
+  start|stop) $1;;
+  restart) stop; start;;
+  *) echo "Run as $0 <start|stop|restart>"; exit 1;;
+esac
+
+

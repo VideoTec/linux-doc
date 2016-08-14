@@ -1,0 +1,61 @@
+-------------------------------------------------------------------------
+http://blog.csdn.net/shb_derek1/article/details/8489112
+-------------------------------------------------------------------------
+
+三、update-rc.d命令详解
+
+从所有的运行级别中删除指定启动项
+update-rc.d -f ＜basename＞ remove
+
+第一个用法：
+按指定顺序、在指定运行级别中启动或关闭
+update-rc.d ＜basename＞ start|stop ＜order＞ ＜runlevels＞
+
+实例：update-rc.d apachectl start 20 2 3 4 5 . stop 20 0 1 6 .
+
+解析：表示
+在2、3、4、5这五个运行级别中，由小到大，第20个开始运行apachectl；
+在 0 1 6这3个运行级别中，第20个关闭apachectl。
+
+这是合并起来的写法，注意它有2个点号，效果等于下面方法：1
+update-rc.d apachectl defaults
+
+第二个用法：
+A启动后B才能启动，B关闭后A才关闭
+2
+update-rc.d A defaults 80 20
+update-rc.d B defaults 90 10
+
+第三个用法：
+启动和关闭顺序为90，级别默认
+update-rc.d ＜basename＞ defaults 90
+
+-------------------------------------------------------------------------
+http://coderbee.net/index.php/linux/20130524/141
+-------------------------------------------------------------------------
+
+update-rc.d命令
+
+此命令用于安装或移除System-V风格的初始化脚本连接。
+脚本是存放在 /etc/init.d/目录下的，
+当然可以在此目录创建连接文件连接到存放在其他地方的脚本文件。
+
+此命令可以指定脚本的执行序号，序号的取值范围是 0-99，序号越大，越迟执行。
+
+用update-rc.d命令添加开机执行脚本
+
+创建要开机自动执行的脚本：/home/test/blog/startBlog.sh，
+并给予可执行权限：chmod +x /home/test/blog/startBlog.sh。
+
+在/etc/init.d目录下创建链接文件到前面的脚本： 
+ln -s /home/test/blog/startBlog.sh /etc/init.d/startBlog。
+
+进入/etc/init.d目录，
+
+1. 用 update-rc.d 命令将连接文件 startBlog 添加到启动脚本中去：
+update-rc.d startBlog defaults 99。
+其中的99表示启动顺序，取值范围是0-99。序号越大的越晚执行。
+
+2. 用 update-rc.d 命令将连接文件 startBlog 移除启动的脚本：
+update-rc.d -f startBlog remove。
+-f选项表示强制执行。

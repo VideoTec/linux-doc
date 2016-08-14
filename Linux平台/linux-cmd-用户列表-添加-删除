@@ -58,3 +58,10 @@ usbmux:x:120:46:usbmux daemon,,,:/var/lib/usbmux:/bin/false
 wangxiang:x:1000:1000:wangxiang,,,:/home/wangxiang:/bin/bash
 debian-tor:x:121:129::/var/lib/tor:/bin/false
 minidlna:x:122:130:MiniDLNA server,,,:/var/lib/minidlna:/bin/false
+
+http://www.ubuntugeek.com/install-jetty-9-java-servlet-engine-and-webserver-on-ubuntu-14-10-server.html
+
+You need to Create jetty user and make it the owner of /opt/jetty directory
+
+sudo useradd jetty -U -s /bin/false
+sudo chown -R jetty:jetty /opt/jetty

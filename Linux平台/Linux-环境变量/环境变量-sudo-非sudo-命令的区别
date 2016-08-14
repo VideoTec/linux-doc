@@ -1,0 +1,22 @@
+环境变量 /etc/profile 定义了 java_home
+
+which java 可正常输出 /usr/java/jdk1.8.0_91/bin/java
+sudo which java 就找不到
+
+http://askubuntu.com/questions/57915/environment-variables-when-run-with-sudo
+
+sudo LD_LIBRARY_PATH=/opt/intel/mkl/lib/ia32:$LD_LIBRARY_PATH LD_PRELOAD=/opt/intel/mkl/lib/ia32/libmkl_core.so python -c "import numpy"
+
+1. 在命令行里指定环境变量
+2. 在脚本里指定环境变量,如在 tomcat/bin/startup.sh 里指定环境变量
+
+os400=false
+case "`uname`" in
+OS400*) os400=true;;
+esac
+
+JAVA_HOME=/usr/java/jdk1.8.0_91  
+JRE_HOME=/usr/java/jdk1.8.0_91/jre  
+PATH=$JAVA_HOME/bin:$JRE_HOME:$PATH  
+CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar  
+TOMCAT_HOME=/home/wangxiang/apache-tomcat-8.5.4

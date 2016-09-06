@@ -1,0 +1,24 @@
+https://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/
+
+ // 查找在路径 /home 下的文件 data.txt 的软链接
+ # find /home -lname data.txt 
+ /home/harris/debug/test2/a 
+
+ // 查看路径 /home 有相同 inode 的所有硬链接
+ # find /home -samefile /home/harris/debug/test3/old.file 
+ /home/harris/debug/test3/hard.link 
+ /home/harris/debug/test3/old.file 
+
+ # find /home -inum 660650 
+ /home/harris/debug/test3/hard.link 
+ /home/harris/debug/test3/old.file 
+
+ // 列出路径 /home/harris/debug/ 下的所有软链接文件
+ # find /home/harris/debug/ -type l -ls 
+ 656662 0 lrwxrwxrwx 1 harris harris 1 Sep 1 14:37 /home/harris/debug/test2/b -> a
+ 656627 0 lrwxrwxrwx 1 harris harris 8 Sep 1 14:37 /home/harris/debug/test2/a -> 
+ data.txt
+ 789467 0 lrwxrwxrwx 1 root root 8 Sep 1 18:00 /home/harris/debug/test/soft.link -> 
+ old.file 
+ 789496    0 lrwxrwxrwx   1 root     root            7 Sep  1 18:01 
+ /home/harris/debug/test/soft.link.dir -> old.dir

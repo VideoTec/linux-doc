@@ -1,0 +1,46 @@
+使用
+/etc/profile
+添加环境变量
+export PATH=$HOME/code/buck/bin:/usr/local/android-studio/bin:$JAVA_HOME/bin:$PATH
+注销后，重新登录，生效
+
+http://unix.stackexchange.com/questions/88106/why-doesnt-my-bash-profile-work
+
+The file ~/.bash_profile is read by bash when it is a login shell. 
+That's what you get when you log in in text mode.
+
+When you log in under X, the startup scripts are executed by /bin/sh. 
+On Ubuntu and Mint, /bin/sh is dash, not bash. 
+Dash and bash both have the same core features, 
+but dash sticks to these core features in order to be fast and small 
+whereas bash adds a lot of features at the cost of requiring more resources. 
+
+It is common to use dash for scripts that don't need the extra features and 
+bash for interactive use (though zsh has a lot of nicer features).
+
+Most combinations of display manager 
+(the program where you type your user name and password) 
+and desktop environment read ~/.profile from the login scripts in 
+
+/etc/X11/Xsession, 
+/usr/bin/lightdm-session, 
+/etc/gdm/Xsession or whichever is applicable. 
+
+So put your environment variable definitions in ~/.profile. 
+Make sure to use only syntax that dash supports.
+
+------------------------------------
+~/.bash_profile 
+------------------------------------
+每个用户都可使用该文件输入专用于自己使用的shell信息,当用户登录时,该文件仅仅执行一次!
+注销，重启，也不会加载
+
+~/.bashrc:
+该文件包含专用于你的bash shell的bash信息,
+当登录时以及每次打开新的shell时,该该文件被读取
+重启,也不加载
+
+
+------------------------------------
+http://www.360doc.com/content/11/1108/09/33776_162685473.shtml
+------------------------------------

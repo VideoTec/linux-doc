@@ -1,0 +1,16 @@
+wangxiang@wangxiang-M68MT-S2P:/$ userdel --help
+用法：userdel [选项] 登录
+
+选项：
+  -f, --force                   即使不属于此用户，也强制删除文件
+  -h, --help                    显示此帮助信息并推出
+  -r, --remove                  删除主目录和邮件池
+  -R, --root CHROOT_DIR         chroot 到的目录
+  -Z, --selinux-user            为用户删除所有的 SELinux 用户映射
+
+
+删除用户（userdel命令）
+
+语法：userdel  [-r]  [要删除的用户的名称]
+
+例如：[root@localhost ~]userdel -r aillo

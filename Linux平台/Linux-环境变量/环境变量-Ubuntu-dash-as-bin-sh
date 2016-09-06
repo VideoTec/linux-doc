@@ -1,0 +1,8 @@
+https://wiki.ubuntu.com/DashAsBinSh
+
+Dash as /bin/sh
+In Ubuntu 6.10, the default system shell, /bin/sh, was changed to dash (the Debian Almquist Shell); previously it had been bash (the GNU Bourne-Again Shell). The same change will affect users of Ubuntu 6.06 LTS upgrading directly to Ubuntu 8.04 LTS. This document explains this change and what you should do if you encounter problems.
+
+The default login shell remains bash. Opening a terminal from the menu or shortcut [crtl-alt-t] provides interactive bash. A script run from the desktop or file manager, through the dialogue 'run in terminal' will execute as POSIX dash.
+
+http://www.linuxidc.com/Linux/2013-10/91100.htm

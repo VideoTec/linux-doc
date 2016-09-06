@@ -1,0 +1,45 @@
+https://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/
+
+文件系统中的索引节点 (index node 又称 inode)，
+索引节点对象是 Linux 虚拟文件系统 (VFS) 的四个基本概念之一
+
+我们知道文件都有文件名与数据，这在 Linux 上被分成两个部分：
+用户数据 (user data) 与元数据 (metadata)。
+
+用户数据，
+即文件数据块 (data block)，数据块是记录文件真实内容的地方；而
+
+元数据
+则是文件的附加属性，如文件大小、创建时间、所有者等信息。
+
+在 Linux 中，元数据中的 inode 号（inode 是文件元数据的一部分但其并不包含文件名，inode 号即索引节点号）
+才是文件的唯一标识而非文件名。
+文件名仅是为了方便人们的记忆和使用，
+系统或程序通过 inode 号寻找正确的文件数据块
+
+------------------------------------
+查看索引结点号
+------------------------------------
+wangxiang@wangxiang-M68MT-S2P:~/doc/lang$ ls -l -i
+总用量 80
+29230361 drwxrwxrwx 13[硬链接数？] wangxiang wangxiang 4096 5月  13 07:07 C&C++
+30019178 drwxrwxr-x  2 wangxiang wangxiang 4096 7月  10 17:50 charset
+29230617 drwxrwxrwx  5 wangxiang wangxiang 4096 8月  24 22:01 HTML&CSS
+29230731 drwxrwxrwx 16 wangxiang wangxiang 4096 7月  10 17:50 Java
+29231399 drwxrwxrwx 12 wangxiang wangxiang 4096 8月  24 22:01 Javascript
+29232531 drwxrwxrwx  5 wangxiang wangxiang 4096 5月  13 07:07 KhronosGroup
+29232824 drwxrwxrwx  2 wangxiang wangxiang 4096 5月  13 07:07 lang-img
+29232831 drwxrwxrwx  2 wangxiang wangxiang 4096 5月  13 07:07 Lua
+ 6554403 drwxrwxr-x  2 wangxiang wangxiang 4096 8月  13 21:33 php
+30019169 drwxrwxr-x  2 wangxiang wangxiang 4096 6月  24 21:20 ProtoBuffer
+29232835 drwxrwxrwx  2 wangxiang wangxiang 4096 5月  13 07:07 Python
+29103257 -rwxrwxrwx  1 wangxiang wangxiang   11 7月  24  2015 README.md
+29232837 drwxrwxrwx  2 wangxiang wangxiang 4096 5月  13 07:07 SQL
+29232842 drwxrwxrwx  2 wangxiang wangxiang 4096 5月  13 07:07 xml
+29232860 drwxrwxrwx  2 wangxiang wangxiang 4096 5月  13 07:07 安全漏洞
+29232879 drwxrwxrwx  2 wangxiang wangxiang 4096 5月  13 07:07 汇编语言
+29233086 drwxrwxrwx  2 wangxiang wangxiang 4096 7月  10 17:50 软件测试
+29232881 drwxrwxrwx  9 wangxiang wangxiang 4096 7月  10 17:50 软件工程
+29233088 drwxrwxrwx  2 wangxiang wangxiang 4096 8月  13 21:33 通用编程概念
+29232864 drwxrwxrwx  2 wangxiang wangxiang 4096 5月  13 07:07 正则表达式
+

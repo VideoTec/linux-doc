@@ -1,0 +1,27 @@
+https://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/
+
+Linux VFS
+Linux 有着极其丰富的文件系统，大体上可分如下几类：
+网络文件系统，如 nfs、cifs 等；
+磁盘文件系统，如 ext4、ext3 等；
+特殊文件系统，如 proc、sysfs、ramfs、tmpfs 等。
+
+实现以上这些文件系统并在 Linux 下共存的基础就是 
+Linux VFS（Virtual File System 又称 Virtual Filesystem Switch），即虚拟文件系统。
+
+VFS 作为一个通用的文件系统，抽象了文件系统的四个基本概念：
+文件、目录项 (dentry)、索引节点 (inode) 及挂载点，
+
+其在内核中为用户空间层的文件系统提供了相关的接口（见 图 3.所示 VFS 在 Linux 系统的架构）。
+VFS 实现了 open()、read() 等系统调并使得 cp 等用户空间程序可跨文件系统。
+VFS 真正实现了上述内容中：在 Linux 中除进程之外一切皆是文件
+
+Linux VFS 存在四个基本对象：
+超级块对象 (superblock object)、索引节点对象 (inode object)、目录项对象 (dentry object) 及文件对象 (file object)。
+1）超级块对象代表一个已安装的文件系统；
+2）索引节点对象代表一个文件；
+3）目录项对象代表一个目录项，如设备文件 event5 在路径 /dev/input/event5 中，其存在四个目录项对象：/ 、dev/ 、input/ 及 event5。
+4）文件对象代表由进程打开的文件。
+
+这四个对象与进程及磁盘文件间的关系如图 4. 所示，其中 d_inode 即为硬链接。
+为文件路径的快速解析，Linux VFS 设计了目录项缓存（Directory Entry Cache，即 dcache）

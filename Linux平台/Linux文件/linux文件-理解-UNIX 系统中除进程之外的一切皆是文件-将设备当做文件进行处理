@@ -1,0 +1,107 @@
+https://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/
+
+Linux 将设备当做文件进行处理，清单 2.展示了如何打开设备文件 /dev/input/event5 并读取文件内容。
+文件 event5 表示一种输入设备，其可能是鼠标或键盘等。
+查看文件 /proc/bus/input/devices 可知 event5 对应设备的类型。
+设备文件 /dev/input/event5 使用 read() 以字符流的方式被读取。
+结构体 input_event 被定义在内核头文件 linux/input.h 中。
+
+清单 2. 打开并读取设备文件
+
+ int fd; 
+ struct input_event ie; 
+ fd = open("/dev/input/event5", O_RDONLY); 
+ read(fd, &ie, sizeof(struct input_event)); 
+ printf("type = %d  code = %d  value = %d\n", 
+			 ie.type, ie.code, ie.value); 
+ close(fd);
+
+-----------------------------------------------------------------------------
+wangxiang@wangxiang-M68MT-S2P:/dev/input$ cat /proc/bus/input/devices
+-----------------------------------------------------------------------------
+
+I: Bus=0019 Vendor=0000 Product=0001 Version=0000
+N: Name="Power Button"
+P: Phys=PNP0C0C/button/input0
+S: Sysfs=/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0C0C:00/input/input0
+U: Uniq=
+H: Handlers=kbd event0 
+B: PROP=0
+B: EV=3
+B: KEY=10000000000000 0
+
+I: Bus=0019 Vendor=0000 Product=0001 Version=0000
+N: Name="Power Button"
+P: Phys=LNXPWRBN/button/input0
+S: Sysfs=/devices/LNXSYSTM:00/LNXPWRBN:00/input/input1
+U: Uniq=
+H: Handlers=kbd event1 
+B: PROP=0
+B: EV=3
+B: KEY=10000000000000 0
+
+I: Bus=0003 Vendor=046d Product=c534 Version=0111
+N: Name="Logitech USB Receiver"
+P: Phys=usb-0000:00:02.0-7/input0
+S: Sysfs=/devices/pci0000:00/0000:00:02.0/usb2/2-7/2-7:1.0/0003:046D:C534.0001/input/input3
+U: Uniq=
+H: Handlers=sysrq kbd event2 leds 
+B: PROP=0
+B: EV=120013
+B: KEY=1000000000007 ff800000000007ff febeffdfffefffff fffffffffffffffe
+B: MSC=10
+B: LED=1f
+
+I: Bus=0003 Vendor=046d Product=c534 Version=0111
+N: Name="Logitech USB Receiver"
+P: Phys=usb-0000:00:02.0-7/input1
+S: Sysfs=/devices/pci0000:00/0000:00:02.0/usb2/2-7/2-7:1.1/0003:046D:C534.0002/input/input4
+U: Uniq=
+H: Handlers=kbd mouse0 event3 
+B: PROP=0
+B: EV=1f
+B: KEY=3007f 0 0 483ffff17aff32d bf54444600000000 ffff0001 130f938b17c000 677bfad941dfed 9ed68000004400 10000002
+B: REL=1c3
+B: ABS=100000000
+B: MSC=10
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+N: Name="HDA NVidia Rear Mic"
+P: Phys=ALSA
+S: Sysfs=/devices/pci0000:00/0000:00:05.0/sound/card0/input5
+U: Uniq=
+H: Handlers=event4 
+B: PROP=0
+B: EV=21
+B: SW=10
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+N: Name="HDA NVidia Front Mic"
+P: Phys=ALSA
+S: Sysfs=/devices/pci0000:00/0000:00:05.0/sound/card0/input6
+U: Uniq=
+H: Handlers=event5 
+B: PROP=0
+B: EV=21
+B: SW=10
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+N: Name="HDA NVidia Line"
+P: Phys=ALSA
+S: Sysfs=/devices/pci0000:00/0000:00:05.0/sound/card0/input7
+U: Uniq=
+H: Handlers=event6 
+B: PROP=0
+B: EV=21
+B: SW=2000
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+N: Name="HDA NVidia Line Out"
+P: Phys=ALSA
+S: Sysfs=/devices/pci0000:00/0000:00:05.0/sound/card0/input8
+U: Uniq=
+H: Handlers=event7 
+B: PROP=0
+B: EV=21
+B: SW=40
+

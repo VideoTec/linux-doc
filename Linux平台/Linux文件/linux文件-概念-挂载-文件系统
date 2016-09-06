@@ -1,0 +1,22 @@
+https://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/
+
+使用命令 df 查看当前系统中挂载的文件系统类型、各文件系统 inode 使用情况及文件系统挂载点
+
+wangxiang@wangxiang-M68MT-S2P:~/doc/lang$ df -i --print-type
+文件系统       类型         Inode 已用(I)   可用(I) 已用(I)% 挂载点
+udev           devtmpfs    976496     529    975967       1% /dev
+tmpfs          tmpfs       989487     756    988731       1% /run
+/dev/sda1      ext4      30285824  703712  29582112       3% /
+tmpfs          tmpfs       989487      57    989430       1% /dev/shm
+tmpfs          tmpfs       989487       5    989482       1% /run/lock
+tmpfs          tmpfs       989487      16    989471       1% /sys/fs/cgroup
+tmpfs          tmpfs       989487      33    989454       1% /run/user/1000
+/dev/sdb5      fuseblk  121162652  327187 120835465       1% /media/wangxiang/data3
+/dev/sdb3      fuseblk   91477248   67732  91409516       1% /media/wangxiang/data2
+
+注意一：
+设备文件目录 /dev 使用的文件系统是 devtmpfs
+注意二：
+inode 号仅在各文件系统下是唯一的，当 Linux 挂载多个文件系统后将出现 inode 号重复的现象
+注意三：
+在 Linux 中查看当前系统已挂着的文件系统类型，除上述使用的命令 df，还可使用命令 mount 或查看文件 /proc/mounts

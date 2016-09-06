@@ -1,0 +1,4 @@
+https://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/
+
+Linux 与其他类 UNIX 系统一样并不区分文件与目录：目录是记录了其他文件名的文件。
+使用命令 mkdir 创建目录时，若期望创建的目录的名称与现有的文件名（或目录名）重复，则会创建失败

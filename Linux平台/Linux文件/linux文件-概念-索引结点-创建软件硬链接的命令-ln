@@ -1,0 +1,51 @@
+wangxiang@wangxiang-M68MT-S2P:~/code/buck/bin$ ln --help
+用法：ln [选项]... [-T] 目标 链接名	(第一种格式)
+　或：ln [选项]... 目标		(第二种格式)
+　或：ln [选项]... 目标... 目录	(第三种格式)
+　或：ln [选项]... -t 目录 目标...	(第四种格式)
+In the 1st form, create a link to TARGET with the name LINK_NAME.
+In the 2nd form, create a link to TARGET in the current directory.
+In the 3rd and 4th forms, create links to each TARGET in DIRECTORY.
+Create hard links by default, symbolic links with --symbolic.
+By default, each destination (name of new link) should not already exist.
+When creating hard links, each TARGET must exist.  Symbolic links
+can hold arbitrary text; if later resolved, a relative link is
+interpreted in relation to its parent directory.
+
+必选参数对长短选项同时适用。
+      --backup[=CONTROL]	为每个已存在的目标文件创建备份文件
+  -b				类似--backup，但不接受任何参数
+  -d, -F, --directory		创建指向目录的硬链接(只适用于超级用户)
+  -f, --force			强行删除任何已存在的目标文件
+  -i, --interactive           prompt whether to remove destinations
+  -L, --logical               dereference TARGETs that are symbolic links
+  -n, --no-dereference        treat LINK_NAME as a normal file if
+                                it is a symbolic link to a directory
+  -P, --physical              make hard links directly to symbolic links
+  -r, --relative              create symbolic links relative to link location
+  -s, --symbolic              make symbolic links instead of hard links
+  -S, --suffix=SUFFIX         override the usual backup suffix
+  -t, --target-directory=DIRECTORY  specify the DIRECTORY in which to create
+                                the links
+  -T, --no-target-directory   treat LINK_NAME as a normal file always
+  -v, --verbose               print name of each linked file
+      --help		显示此帮助信息并退出
+      --version		显示版本信息并退出
+
+The backup suffix is '~', unless set with --suffix or SIMPLE_BACKUP_SUFFIX.
+The version control method may be selected via the --backup option or through
+the VERSION_CONTROL environment variable.  Here are the values:
+
+  none, off       不进行备份(即使使用了--backup 选项)
+  numbered, t     备份文件加上数字进行排序
+  existing, nil   若有数字的备份文件已经存在则使用数字，否则使用普通方式备份
+  simple, never   永远使用普通方式备份
+
+Using -s ignores -L and -P.  Otherwise, the last option specified controls
+behavior when a TARGET is a symbolic link, defaulting to -P.
+
+GNU coreutils online help: <http://www.gnu.org/software/coreutils/>
+请向<http://translationproject.org/team/zh_CN.html> 报告ln 的翻译错误
+Full documentation at: <http://www.gnu.org/software/coreutils/ln>
+or available locally via: info '(coreutils) ln invocation'
+

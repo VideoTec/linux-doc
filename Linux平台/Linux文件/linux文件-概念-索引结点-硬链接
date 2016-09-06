@@ -1,0 +1,44 @@
+https://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/
+
+若一个 inode 号对应多个文件名，则称这些文件为硬链接。
+换言之，硬链接就是同一个文件使用了多个别名（见 图 2.hard link 就是 file 的一个别名，他们有共同的 inode）。
+硬链接可由命令 link 或 ln 创建。
+
+如下是对文件 oldfile 创建硬链接。
+ link oldfile newfile 
+ ln oldfile newfile
+
+ # ls -li 
+ total 0 
+
+ // 只能对已存在的文件创建硬连接
+ # link old.file hard.link 
+ link: cannot create link `hard.link' to `old.file': No such file or directory 
+
+ # echo "This is an original file" > old.file 
+ # cat old.file 
+ This is an original file 
+ # stat old.file 
+  File: `old.file'
+  Size: 25        	 Blocks: 8          IO Block: 4096   regular file 
+ Device: 807h/2055d 	 Inode: 660650      Links: 2 
+ Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root) 
+ ... 
+ // 文件有相同的 inode 号以及 data block 
+ # link old.file hard.link | ls -li 
+ total 8 
+ 660650 -rw-r--r-- 2 root root 25 Sep  1 17:44 hard.link 
+ 660650 -rw-r--r-- 2 root root 25 Sep  1 17:44 old.file 
+
+ // 不能交叉文件系统
+ # ln /dev/input/event5 /root/bfile.txt 
+ ln: failed to create hard link `/root/bfile.txt' => `/dev/input/event5': 
+ Invalid cross-device link 
+
+ // 不能对目录进行创建硬连接
+ # mkdir -p old.dir/test 
+ # ln old.dir/ hardlink.dir 
+ ln: `old.dir/': hard link not allowed for directory 
+
+ # ls -iF 
+ 660650 hard.link  657948 old.dir/  660650 old.file

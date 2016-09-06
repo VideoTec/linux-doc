@@ -1,0 +1,74 @@
+sudo useradd wangxiang3
+1. 创建用户 wangxiang3 并同时创建一个新的组 wangxiang3
+2. /etc/shadow wangxiang3:!:17038:0:99999:7:::
+3. 问题：没有创建 /home/wangxiang3 home 目录
+   -m, --create-home	创建用户的主目录
+
+http://ixdba.blog.51cto.com/2895551/531787/
+
+3．/etc/default/useradd文件
+
+当我们通过useradd命令不加任何参数创建一个用户后，
+用户默认的主目录一般位于/home下，默认使用的shell是/bin/bash，
+这是为什么呢，看看/etc/default/useradd这个文件的内容就完全明白了。
+
+[root@localhost ~]# more /etc/default/useradd
+# useradd defaults file
+GROUP=100  
+HOME=/home  #此项表示将新建用户的主目录放在/home目录下
+INACTIVE=-1 #此项表示是否启用帐号过期禁用，-1表示不启用
+EXPIRE=     #此项表示帐号过期日期，不设置表示不启用
+SHELL=/bin/bash  #此项指定了新建用户的默认shell类型
+SKEL=/etc/skel  #此项用来指定用户主目录默认文件的来源，也就是说新建用户主目录下的文件都是从这个目录下复制而来的
+CREATE_MAIL_SPOOL=no
+
+/etc/default/useradd文件定义了新建用户的一些默认属性，
+比如用户的主目录、使用的shell等等，通过更改此文件，可以改变创建新用户的默认属性值。
+
+改变此文件有两种方法，
+一种是通过文本编辑器方式更改，另
+一种是通过useradd命令来更改。
+
+这里介绍一下第二种方法：
+Useradd命令加“-D”参数后，就可以修改配置文件/etc/default/useradd，
+使用的一般格式为：
+
+useradd -D [-g group] [-b base] [-s shell] [-f inactive] [-e expire ]
+每个选项详细含义如下：
+ -g default_group
+表示新建用户的起始组名或者GID，组名必须为已经存在的用户组名称，GID也必须是已经存在的用户组GID。与/etc/default/useradd文件中“GROUP”行对应。
+ -b default_home
+指定新建用户主目录的上级目录，也就是所有新建用户都会在此目录下创建自己的主目录。与/etc/default/useradd文件中HOME行对应。
+ -s default_shell
+指定新建用户默认使用的shell，与/etc/default/useradd文件中“SHELL”行对应。
+ -f default_inactive
+指定用户帐号过期多长时间后就永久停用，与/etc/default/useradd文件中“INACTIVE”行对应。
+ -e default_expire_date
+指定用户帐号的过期时间。与/etc/default/useradd文件中“EXPIRE”行对应。
+
+例子：
+useradd –D不加任何参数时，显示/etc/default/useradd文件的当前设置
+[root@localhost ~]# useradd -D  
+GROUP=100
+HOME=/home
+INACTIVE=-1
+EXPIRE=
+SHELL=/bin/bash
+SKEL=/etc/skel
+
+如果要修改添加用户时的默认shell为/bin/csh，可以这么操作：
+[root@localhost ~]# useradd -D -s /bin/csh
+[root@localhost ~]# useradd -D
+GROUP=100
+HOME=/home
+INACTIVE=-1
+EXPIRE=
+SHELL=/bin/csh
+SKEL=/etc/skel
+
+4．/etc/skel目录
+
+在创建一个新用户后，会在新用户的主目录下看到类似.bash_profile, .bashrc, .bash_logout等文件，
+这些文件是怎么来的呢，如果我想让新建立的用户在主目录下默认拥有自己指定的配置文件，该如何设置呢？
+/etc/skel目录就是解决这个问题的，/etc/skel目录定义了新建用户在主目录下默认的配置文件，
+更改/etc/skel目录下的内容就可以改变新建用户默认主目录的配置文件信息。

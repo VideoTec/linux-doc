@@ -1,0 +1,6 @@
+https://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/
+
+Linux 有着极其丰富的文件系统，大体上可分如下几类：
+网络文件系统，如 nfs、cifs 等；
+磁盘文件系统，如 ext4、ext3 等；
+特殊文件系统，如 proc、sysfs、ramfs、tmpfs 等。

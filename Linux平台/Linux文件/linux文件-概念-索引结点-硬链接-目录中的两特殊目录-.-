@@ -1,0 +1,19 @@
+https://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/
+
+硬链接不能对目录创建是受限于文件系统的设计（见 清单 4.对目录创建硬链接将失败）。
+现 Linux 文件系统中的目录均隐藏了两个个特殊的目录：
+当前目录（.）与父目录（..）。
+
+查看这两个特殊目录的 inode 号可知其实这两目录就是两个硬链接（注意目录 /mnt/lost+found/ 的 inode 号）。
+若系统允许对目录创建硬链接，则会产生目录环。
+
+wangxiang@wangxiang-M68MT-S2P:~/doc/lang$ ls -a -l -i
+总用量 92
+29103256 drwxrwxrwx 22 wangxiang wangxiang 4096 8月  13 21:33 .
+25692543 drwxrwxrwx 13 wangxiang wangxiang 4096 5月  13 07:09 ..
+29230361 drwxrwxrwx 13 wangxiang wangxiang 4096 5月  13 07:07 C&C++
+30019178 drwxrwxr-x  2 wangxiang wangxiang 4096 7月  10 17:50 charset
+29103258 drwxrwxrwx  7 wangxiang wangxiang 4096 8月  24 22:01 .git
+29230617 drwxrwxrwx  5 wangxiang wangxiang 4096 8月  24 22:01 HTML&CSS
+29230731 drwxrwxrwx 16 wangxiang wangxiang 4096 7月  10 17:50 Java
+
